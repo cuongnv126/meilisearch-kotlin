@@ -1,0 +1,467 @@
+package com.meilisearch.sdk
+
+import com.google.gson.Gson
+
+/**
+ * Settings Handler for manipulation of an Index [Settings]
+ *
+ *
+ * Refer https://docs.meilisearch.com/reference/api/settings.html
+ */
+class SettingsHandler(config: Config) {
+    private val meiliSearchHttpRequest = MeiliSearchHttpRequest(config)
+    private val gson = Gson()
+
+    /**
+     * Gets the settings of a given index Refer
+     * https://docs.meilisearch.com/reference/api/settings.html#get-settings
+     *
+     * @param uid Index identifier
+     * @return settings of a given uid as String
+     * @throws Exception if an error occurs
+     */
+    fun getSettings(uid: String): Settings {
+        return gson.fromJson(
+            meiliSearchHttpRequest.get("/indexes/$uid/settings"), Settings::class.java
+        )
+    }
+
+    /**
+     * Updates the settings of a given index Refer
+     * https://docs.meilisearch.com/reference/api/settings.html#update-settings
+     *
+     * @param uid Index identifier
+     * @param settings the data that contains the new settings
+     * @return Task instance
+     * @throws Exception if an error occurs
+     */
+    fun updateSettings(uid: String, settings: Settings): Task {
+        return gson.fromJson(
+            meiliSearchHttpRequest.post(
+                "/indexes/$uid/settings", settings.getUpdateQuery()
+            ),
+            Task::class.java
+        )
+    }
+
+    /**
+     * Resets the settings of a given index Refer
+     * https://docs.meilisearch.com/reference/api/settings.html#reset-settings
+     *
+     * @param uid Index identifier
+     * @return Task instance
+     * @throws Exception if an error occurs
+     */
+    fun resetSettings(uid: String): Task {
+        return gson.fromJson(
+            meiliSearchHttpRequest.delete("/indexes/$uid/settings"), Task::class.java
+        )
+    }
+
+    /**
+     * Gets the ranking rules settings of a given index Refer
+     * https://docs.meilisearch.com/reference/api/ranking_rules.html#get-ranking-rules
+     *
+     * @param uid Index identifier
+     * @return an array of strings that contains the ranking rules settings
+     * @throws Exception if an error occurs
+     */
+    fun getRankingRuleSettings(uid: String): Array<String> {
+        return gson.fromJson(
+            meiliSearchHttpRequest.get("/indexes/$uid/settings/ranking-rules"),
+            Array<String>::class.java
+        )
+    }
+
+    /**
+     * Updates the ranking rules settings of a given index Refer
+     * https://docs.meilisearch.com/reference/api/ranking_rules.html#update-ranking-rules
+     *
+     * @param uid Index identifier
+     * @param rankingRules the data that contains the new settings
+     * @return Task instance
+     * @throws Exception if an error occurs
+     */
+    fun updateRankingRuleSettings(uid: String, rankingRules: Array<String?>?): Task {
+        val rankingRulesAsJson = gson.toJson(rankingRules)
+        return gson.fromJson(
+            meiliSearchHttpRequest.post(
+                "/indexes/$uid/settings/ranking-rules", rankingRulesAsJson
+            ),
+            Task::class.java
+        )
+    }
+
+    /**
+     * Resets the ranking rules settings of a given index Refer
+     * https://docs.meilisearch.com/reference/api/ranking_rules.html#reset-ranking-rules
+     *
+     * @param uid Index identifier
+     * @return Task instance
+     * @throws Exception if an error occurs
+     */
+    fun resetRankingRulesSettings(uid: String): Task {
+        return gson.fromJson(
+            meiliSearchHttpRequest.delete("/indexes/$uid/settings/ranking-rules"),
+            Task::class.java
+        )
+    }
+
+    /**
+     * Gets the synonyms settings of a given index Refer
+     * https://docs.meilisearch.com/reference/api/synonyms.html#get-synonyms
+     *
+     * @param uid Index identifier
+     * @return a Map that contains all synonyms and their associated words
+     * @throws Exception if an error occurs
+     */
+    fun getSynonymsSettings(uid: String): Map<String, Array<String>> {
+        return gson.fromJson<Map<String, Array<String>>>(
+            meiliSearchHttpRequest.get("/indexes/$uid/settings/synonyms"), MutableMap::class.java
+        )
+    }
+
+    /**
+     * Updates the synonyms settings of a given index Refer
+     * https://docs.meilisearch.com/reference/api/synonyms.html#update-synonyms
+     *
+     * @param uid Index identifier
+     * @param synonyms a Map that contains the new synonyms settings
+     * @return Task instance
+     * @throws Exception if an error occurs
+     */
+    fun updateSynonymsSettings(uid: String, synonyms: Map<String?, Array<String?>?>?): Task {
+        val synonymsAsJson = gson.toJson(synonyms)
+        return gson.fromJson(
+            meiliSearchHttpRequest.post(
+                "/indexes/$uid/settings/synonyms", synonymsAsJson
+            ),
+            Task::class.java
+        )
+    }
+
+    /**
+     * Resets the synonyms settings of a given index Refer
+     * https://docs.meilisearch.com/reference/api/synonyms.html#reset-synonyms
+     *
+     * @param uid Index identifier
+     * @return Task instance
+     * @throws Exception if an error occurs
+     */
+    fun resetSynonymsSettings(uid: String?): Task {
+        return gson.fromJson(
+            meiliSearchHttpRequest.delete("/indexes/$uid/settings/synonyms"),
+            Task::class.java
+        )
+    }
+
+    /**
+     * Gets the stop-words settings of the index Refer
+     * https://docs.meilisearch.com/reference/api/stop_words.html#get-stop-words
+     *
+     * @param uid Index identifier
+     * @return an array of strings that contains the stop-words
+     * @throws Exception if an error occurs
+     */
+    fun getStopWordsSettings(uid: String?): Array<String> {
+        return gson.fromJson(
+            meiliSearchHttpRequest.get("/indexes/$uid/settings/stop-words"),
+            Array<String>::class.java
+        )
+    }
+
+    /**
+     * Updates the stop-words settings of the index Refer
+     * https://docs.meilisearch.com/reference/api/stop_words.html#update-stop-words
+     *
+     * @param uid Index identifier
+     * @param stopWords an array of strings that contains the new stop-words settings
+     * @return Task instance
+     * @throws Exception if an error occurs
+     */
+    @Throws(Exception::class)
+    fun updateStopWordsSettings(uid: String?, stopWords: Array<String?>?): Task {
+        val stopWordsAsJson = gson.toJson(stopWords)
+        return gson.fromJson(
+            meiliSearchHttpRequest.post(
+                "/indexes/$uid/settings/stop-words", stopWordsAsJson
+            ),
+            Task::class.java
+        )
+    }
+
+    /**
+     * Resets the stop-words settings of the index Refer
+     * https://docs.meilisearch.com/reference/api/stop_words.html#reset-stop-words
+     *
+     * @param uid Index identifier
+     * @return Task instance
+     * @throws Exception if an error occurs
+     */
+    fun resetStopWordsSettings(uid: String?): Task {
+        return gson.fromJson(
+            meiliSearchHttpRequest.delete("/indexes/$uid/settings/stop-words"),
+            Task::class.java
+        )
+    }
+
+    /**
+     * Get the searchable attributes of an index.
+     * https://docs.meilisearch.com/reference/api/searchable_attributes.html#get-searchable-attributes
+     *
+     * @param uid Index identifier
+     * @return an array of strings that contains the searchable attributes
+     * @throws Exception if an error occurs
+     */
+    fun getSearchableAttributesSettings(uid: String?): Array<String> {
+        return gson.fromJson(
+            meiliSearchHttpRequest.get("/indexes/$uid/settings/searchable-attributes"),
+            Array<String>::class.java
+        )
+    }
+
+    /**
+     * Updates the searchable attributes an index Refer
+     * https://docs.meilisearch.com/reference/api/searchable_attributes.html#update-searchable-attributes
+     *
+     * @param uid Index identifier
+     * @param searchableAttributes an array of strings that contains the new searchable attributes
+     * settings
+     * @return Task instance
+     * @throws Exception if an error occurs
+     */
+    fun updateSearchableAttributesSettings(uid: String?, searchableAttributes: Array<String?>?): Task {
+        val searchableAttributesAsJson = gson.toJson(searchableAttributes)
+        return gson.fromJson(
+            meiliSearchHttpRequest.post(
+                "/indexes/$uid/settings/searchable-attributes",
+                searchableAttributesAsJson
+            ),
+            Task::class.java
+        )
+    }
+
+    /**
+     * Reset the searchable attributes of the index to the default value.
+     * https://docs.meilisearch.com/reference/api/searchable_attributes.html#reset-searchable-attributes
+     *
+     * @param uid Index identifier
+     * @return Task instance
+     * @throws Exception if an error occurs
+     */
+    fun resetSearchableAttributesSettings(uid: String?): Task {
+        return gson.fromJson(
+            meiliSearchHttpRequest.delete(
+                "/indexes/$uid/settings/searchable-attributes"
+            ),
+            Task::class.java
+        )
+    }
+
+    /**
+     * Get the display attributes of an index.
+     * https://docs.meilisearch.com/reference/api/displayed_attributes.html#get-displayed-attributes
+     *
+     * @param uid Index identifier
+     * @return an array of strings that contains attributes of an index to display
+     * @throws Exception if an error occurs
+     */
+    fun getDisplayedAttributesSettings(uid: String?): Array<String> {
+        return gson.fromJson(
+            meiliSearchHttpRequest.get("/indexes/$uid/settings/displayed-attributes"),
+            Array<String>::class.java
+        )
+    }
+
+    /**
+     * Updates the display attributes of an index Refer
+     * https://docs.meilisearch.com/reference/api/displayed_attributes.html#update-displayed-attributes
+     *
+     * @param uid Index identifier
+     * @param displayAttributes an array of strings that contains the new displayed attributes
+     * settings
+     * @return Task instance
+     * @throws Exception if an error occurs
+     */
+    fun updateDisplayedAttributesSettings(uid: String?, displayAttributes: Array<String?>?): Task {
+        val displayAttributesAsJson = gson.toJson(displayAttributes)
+        return gson.fromJson(
+            meiliSearchHttpRequest.post(
+                "/indexes/$uid/settings/displayed-attributes",
+                displayAttributesAsJson
+            ),
+            Task::class.java
+        )
+    }
+
+    /**
+     * Reset the displayed attributes of the index to the default value.
+     * https://docs.meilisearch.com/reference/api/displayed_attributes.html#reset-displayed-attributes
+     *
+     * @param uid Index identifier
+     * @return Task instance
+     * @throws Exception if an error occurs
+     */
+    fun resetDisplayedAttributesSettings(uid: String?): Task {
+        return gson.fromJson(
+            meiliSearchHttpRequest.delete("/indexes/$uid/settings/displayed-attributes"),
+            Task::class.java
+        )
+    }
+
+    /**
+     * Get an index's filterableAttributes.
+     * https://docs.meilisearch.com/reference/api/filterable_attributes.html#get-filterable-attributes
+     *
+     * @param uid Index identifier
+     * @return an array of strings that contains the filterable attributes settings
+     * @throws Exception if an error occurs
+     */
+    fun getFilterableAttributesSettings(uid: String?): Array<String> {
+        return gson.fromJson(
+            meiliSearchHttpRequest.get("/indexes/$uid/settings/filterable-attributes"),
+            Array<String>::class.java
+        )
+    }
+
+    /**
+     * Update an index's filterable attributes list. This will re-index all documents in the index.
+     * https://docs.meilisearch.com/reference/api/filterable_attributes.html#update-filterable-attributes
+     *
+     * @param uid Index identifier
+     * @param filterableAttributes an array of strings that contains the new filterable attributes
+     * settings
+     * @return Task instance
+     * @throws Exception if an error occurs
+     */
+    @Throws(Exception::class)
+    fun updateFilterableAttributesSettings(uid: String?, filterableAttributes: Array<String?>?): Task {
+        val filterableAttributesAsJson = gson.toJson(filterableAttributes)
+        return gson.fromJson(
+            meiliSearchHttpRequest.post(
+                "/indexes/$uid/settings/filterable-attributes",
+                filterableAttributesAsJson
+            ),
+            Task::class.java
+        )
+    }
+
+    /**
+     * Reset an index's filterable attributes list back to its default value.
+     * https://docs.meilisearch.com/reference/api/filterable_attributes.html#reset-filterable-attributes
+     *
+     * @param uid Index identifier
+     * @return Task instance
+     * @throws Exception if an error occurs
+     */
+    @Throws(Exception::class)
+    fun resetFilterableAttributesSettings(uid: String?): Task {
+        return gson.fromJson(
+            meiliSearchHttpRequest.delete(
+                "/indexes/$uid/settings/filterable-attributes"
+            ),
+            Task::class.java
+        )
+    }
+
+    /**
+     * Get the distinct attribute field of an index.
+     * https://docs.meilisearch.com/reference/api/distinct_attribute.html#get-distinct-attribute
+     *
+     * @param uid Index identifier
+     * @return a string of the distinct attribute field
+     * @throws Exception if an error occurs
+     */
+    fun getDistinctAttributeSettings(uid: String): String {
+        return gson.fromJson(
+            meiliSearchHttpRequest.get("/indexes/$uid/settings/distinct-attribute"),
+            String::class.java
+        )
+    }
+
+    /**
+     * Update the distinct attribute field of an index.
+     * https://docs.meilisearch.com/reference/api/distinct_attribute.html#update-distinct-attribute
+     *
+     * @param uid Index identifier
+     * @param distinctAttribute a String that contains the new distinct attributes settings
+     * @return Task instance
+     * @throws Exception if an error occurs
+     */
+    @Throws(Exception::class)
+    fun updateDistinctAttributeSettings(uid: String?, distinctAttribute: String?): Task {
+        val distinctAttributeAsJson = gson.toJson(distinctAttribute)
+        return gson.fromJson(
+            meiliSearchHttpRequest.post(
+                "/indexes/$uid/settings/distinct-attribute",
+                distinctAttributeAsJson
+            ),
+            Task::class.java
+        )
+    }
+
+    /**
+     * Reset the distinct attribute field of an index to its default value.
+     * https://docs.meilisearch.com/reference/api/distinct_attribute.html#reset-distinct-attribute
+     *
+     * @param uid Index identifier
+     * @return Task instance
+     * @throws Exception if an error occurs
+     */
+    @Throws(Exception::class)
+    fun resetDistinctAttributeSettings(uid: String?): Task {
+        return gson.fromJson(
+            meiliSearchHttpRequest.delete("/indexes/$uid/settings/distinct-attribute"),
+            Task::class.java
+        )
+    }
+
+    /**
+     * Gets the typo tolerance settings of a given index Refer
+     * https://docs.meilisearch.com/reference/api/typo_tolerance.html#get-typo-tolerance
+     *
+     * @param uid Index identifier
+     * @return a TypoTolerance instance that contains all typo tolerance settings
+     * @throws Exception if an error occurs
+     */
+    fun getTypoToleranceSettings(uid: String?): TypoTolerance {
+        return gson.fromJson(
+            meiliSearchHttpRequest.get("/indexes/$uid/settings/typo-tolerance"),
+            TypoTolerance::class.java
+        )
+    }
+
+    /**
+     * Updates the typo tolerance settings of a given index Refer
+     * https://docs.meilisearch.com/reference/api/typo_tolerance.html#update-typo-tolerance
+     *
+     * @param uid Index identifier
+     * @param typoTolerance a TypoTolerance instance that contains the new typo tolerance settings
+     * @return Task instance
+     * @throws Exception if an error occurs
+     */
+    fun updateTypoToleranceSettings(uid: String?, typoTolerance: TypoTolerance?): Task {
+        val typoToleranceAsJson = gson.toJson(typoTolerance)
+        return gson.fromJson(
+            meiliSearchHttpRequest.post(
+                "/indexes/$uid/settings/typo-tolerance", typoToleranceAsJson
+            ),
+            Task::class.java
+        )
+    }
+
+    /**
+     * Resets the typo tolerance settings of a given index Refer
+     * https://docs.meilisearch.com/reference/api/typo_tolerance.html#reset-typo-tolerance
+     *
+     * @param uid Index identifier
+     * @return Task instance
+     * @throws Exception if an error occurs
+     */
+    fun resetTypoToleranceSettings(uid: String?): Task {
+        return gson.fromJson(
+            meiliSearchHttpRequest.delete("/indexes/$uid/settings/typo-tolerance"),
+            Task::class.java
+        )
+    }
+}
