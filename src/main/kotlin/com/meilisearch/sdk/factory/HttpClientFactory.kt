@@ -11,8 +11,10 @@ interface HttpClientFactory {
     fun newHttpClient(): AbstractHttpClient
 
     object Default : HttpClientFactory {
+        private val httpClient = DefaultHttpClient()
+
         override fun newHttpClient(): AbstractHttpClient {
-            return DefaultHttpClient()
+            return httpClient
         }
     }
 }

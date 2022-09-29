@@ -1,4 +1,10 @@
-package com.meilisearch.sdk
+package com.meilisearch.sdk.handler
+
+import com.meilisearch.sdk.Config
+import com.meilisearch.sdk.model.Task
+import com.meilisearch.sdk.model.TypoTolerance
+import com.meilisearch.sdk.http.MeiliSearchHttpRequest
+import com.meilisearch.sdk.model.Settings
 
 /**
  * Settings Handler for manipulation of an Index [Settings]

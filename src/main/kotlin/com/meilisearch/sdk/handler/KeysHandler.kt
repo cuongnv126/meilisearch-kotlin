@@ -1,7 +1,11 @@
-package com.meilisearch.sdk
+package com.meilisearch.sdk.handler
 
 import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
+import com.meilisearch.sdk.Config
+import com.meilisearch.sdk.http.MeiliSearchHttpRequest
+import com.meilisearch.sdk.model.Result
+import com.meilisearch.sdk.model.Key
 
 /**
  * Wrapper around MeilisearchHttpRequest class to use for MeiliSearch keys

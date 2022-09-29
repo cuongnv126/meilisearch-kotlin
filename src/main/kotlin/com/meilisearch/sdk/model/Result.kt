@@ -1,4 +1,4 @@
-package com.meilisearch.sdk
+package com.meilisearch.sdk.model
 
 import com.meilisearch.sdk.shared.SharedObject
 

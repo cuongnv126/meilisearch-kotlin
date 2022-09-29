@@ -5,7 +5,16 @@ package com.meilisearch.sdk
 
 import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm
+import com.meilisearch.sdk.handler.DumpHandler
+import com.meilisearch.sdk.handler.Index
+import com.meilisearch.sdk.handler.IndexesHandler
+import com.meilisearch.sdk.handler.KeysHandler
+import com.meilisearch.sdk.handler.TasksHandler
 import com.meilisearch.sdk.exceptions.MeiliSearchException
+import com.meilisearch.sdk.model.Dump
+import com.meilisearch.sdk.model.Key
+import com.meilisearch.sdk.model.Task
+import com.meilisearch.sdk.model.TenantTokenOptions
 import java.util.Date
 import java.util.TimeZone
 

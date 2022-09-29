@@ -1,4 +1,4 @@
-package com.meilisearch.sdk
+package com.meilisearch.sdk.model
 
 class Details(
     val receivedDocuments: Long = 0,

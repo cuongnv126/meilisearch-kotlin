@@ -1,6 +1,8 @@
-package com.meilisearch.sdk
+package com.meilisearch.sdk.handler
 
 import com.google.gson.JsonObject
+import com.meilisearch.sdk.Config
+import com.meilisearch.sdk.http.MeiliSearchHttpRequest
 
 class IndexesHandler(config: Config) {
     private val request = MeiliSearchHttpRequest(config)

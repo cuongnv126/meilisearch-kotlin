@@ -1,6 +1,12 @@
-package com.meilisearch.sdk
+package com.meilisearch.sdk.handler
 
+import com.meilisearch.sdk.Config
+import com.meilisearch.sdk.http.MeiliSearchHttpRequest
+import com.meilisearch.sdk.model.Settings
+import com.meilisearch.sdk.model.Task
+import com.meilisearch.sdk.model.TypoTolerance
 import com.meilisearch.sdk.json.JsonHandler
+import com.meilisearch.sdk.model.SearchRequest
 import com.meilisearch.sdk.model.SearchResult
 import java.io.Serializable
 import org.json.JSONArray
@@ -253,7 +259,7 @@ class Index internal constructor(
      * @return Meilisearch API response
      * @throws Exception if an error occurs
      */
-    fun search(q: String?): SearchResult? {
+    fun search(q: String): SearchResult? {
         return search.search(uid, q)
     }
 
@@ -268,7 +274,7 @@ class Index internal constructor(
         return search.search(uid, searchRequest)
     }
 
-    fun rawSearch(query: String?): String {
+    fun rawSearch(query: String): String {
         return search.rawSearch(uid, query)
     }
 

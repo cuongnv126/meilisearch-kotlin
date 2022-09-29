@@ -1,5 +1,8 @@
-package com.meilisearch.sdk
+package com.meilisearch.sdk.handler
 
+import com.meilisearch.sdk.Config
+import com.meilisearch.sdk.http.MeiliSearchHttpRequest
+import com.meilisearch.sdk.model.SearchRequest
 import com.meilisearch.sdk.model.SearchResult
 
 class Search(config: Config) {

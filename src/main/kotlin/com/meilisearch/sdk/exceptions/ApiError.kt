@@ -2,7 +2,9 @@ package com.meilisearch.sdk.exceptions
 
 import java.io.Serializable
 
-/** This is class wraps errors sent by Meilisearch API  */
+/**
+ * This is class wraps errors sent by Meilisearch API
+ */
 class ApiError(
     val message: String?,
     val errorCode: String?,

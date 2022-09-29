@@ -1,4 +1,8 @@
-package com.meilisearch.sdk
+package com.meilisearch.sdk.handler
+
+import com.meilisearch.sdk.Config
+import com.meilisearch.sdk.http.MeiliSearchHttpRequest
+import com.meilisearch.sdk.model.Dump
 
 class DumpHandler(config: Config) {
     private val request = MeiliSearchHttpRequest(config)

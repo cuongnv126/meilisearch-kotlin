@@ -1,5 +1,6 @@
-package com.meilisearch.sdk
+package com.meilisearch.sdk.http
 
+import com.meilisearch.sdk.Config
 import com.meilisearch.sdk.exceptions.ApiError
 import com.meilisearch.sdk.exceptions.MeiliSearchApiException
 import com.meilisearch.sdk.http.factory.BasicRequestFactory
