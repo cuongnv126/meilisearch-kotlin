@@ -1,7 +1,5 @@
 package com.meilisearch.sdk
 
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
 import java.util.Date
 
 /**
@@ -11,8 +9,8 @@ import java.util.Date
  * Refer https://docs.meilisearch.com/reference/api/tasks.html
  */
 class TasksHandler(config: Config) {
-    private val meiliSearchHttpRequest = MeiliSearchHttpRequest(config)
-    private val gson = Gson()
+    private val request = MeiliSearchHttpRequest(config)
+    private val jsonHandler = config.jsonHandlerFactory.newJsonHandler()
 
     /**
      * Retrieves the Task at the specified indexUid with the specified taskUid
@@ -24,7 +22,7 @@ class TasksHandler(config: Config) {
      */
     fun getTask(indexUid: String?, taskUid: Int): Task {
         val urlPath = "/indexes/$indexUid/tasks/$taskUid"
-        return gson.fromJson(meiliSearchHttpRequest.get(urlPath), Task::class.java)
+        return jsonHandler.decode(request.get(urlPath), Task::class.java)
     }
 
     /**
@@ -36,7 +34,7 @@ class TasksHandler(config: Config) {
      */
     fun getTasks(indexUid: String?): Array<Task> {
         val urlPath = "/indexes/$indexUid/tasks"
-        return gson.fromJson(meiliSearchHttpRequest.get(urlPath), Array<Task>::class.java)
+        return jsonHandler.decode(request.get(urlPath), Array<Task>::class.java)
     }
 
     /**
@@ -48,7 +46,7 @@ class TasksHandler(config: Config) {
      */
     fun getTask(taskUid: Int): Task {
         val urlPath = "/tasks/$taskUid"
-        return gson.fromJson(meiliSearchHttpRequest.get(urlPath), Task::class.java)
+        return jsonHandler.decode(request.get(urlPath), Task::class.java)
     }
 
     /**
@@ -59,9 +57,11 @@ class TasksHandler(config: Config) {
      */
     fun getTasks(): Array<Task>? {
         val urlPath = "/tasks"
-        val result = gson.fromJson<Result<Task>>(
-            meiliSearchHttpRequest.get(urlPath),
-            object : TypeToken<Result<Task?>?>() {}.type
+        // todo: check later
+        val result = jsonHandler.decode<Result<Task>>(
+            request.get(urlPath),
+            Result::class.java,
+            Task::class.java
         )
         return result.results
     }

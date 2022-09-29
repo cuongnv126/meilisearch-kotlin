@@ -1,9 +1,8 @@
 package com.meilisearch.sdk
 
-import com.google.gson.Gson
-
 class DumpHandler(config: Config) {
-    private val meiliSearchHttpRequest = MeiliSearchHttpRequest(config)
+    private val request = MeiliSearchHttpRequest(config)
+    private val jsonHandler = config.jsonHandlerFactory.newJsonHandler()
 
     /**
      * Creates a dump Refer https://docs.meilisearch.com/reference/api/dump.html#create-a-dump
@@ -12,7 +11,7 @@ class DumpHandler(config: Config) {
      * @throws Exception if an error occurs
      */
     fun createDump(): Dump {
-        return Gson().fromJson(meiliSearchHttpRequest.post("/dumps", ""), Dump::class.java)
+        return jsonHandler.decode(request.post("/dumps", ""), Dump::class.java)
     }
 
     /**
@@ -23,6 +22,6 @@ class DumpHandler(config: Config) {
      * @throws Exception if an error occurs
      */
     fun getDumpStatus(uid: String): String {
-        return meiliSearchHttpRequest.get("/dumps/$uid/status")
+        return request.get("/dumps/$uid/status")
     }
 }

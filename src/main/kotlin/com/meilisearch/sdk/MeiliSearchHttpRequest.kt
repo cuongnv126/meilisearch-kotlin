@@ -3,16 +3,16 @@ package com.meilisearch.sdk
 import com.meilisearch.sdk.exceptions.ApiError
 import com.meilisearch.sdk.exceptions.MeiliSearchApiException
 import com.meilisearch.sdk.http.AbstractHttpClient
-import com.meilisearch.sdk.http.DefaultHttpClient
 import com.meilisearch.sdk.http.factory.BasicRequestFactory
 import com.meilisearch.sdk.http.factory.RequestFactory
 import com.meilisearch.sdk.http.request.HttpMethod
 import com.meilisearch.sdk.json.GsonJsonHandler
 
 class MeiliSearchHttpRequest {
+    private val jsonHandler = GsonJsonHandler()
+
     private val client: AbstractHttpClient
-    private val factory: RequestFactory
-    private val jsonHandler: GsonJsonHandler
+    private val requestFactory: RequestFactory
 
     /**
      * Constructor for the MeiliSearchHttpRequest
@@ -20,9 +20,8 @@ class MeiliSearchHttpRequest {
      * @param config Meilisearch configuration
      */
     constructor(config: Config) {
-        client = DefaultHttpClient(config)
-        jsonHandler = GsonJsonHandler()
-        factory = BasicRequestFactory(jsonHandler)
+        requestFactory = BasicRequestFactory(config, jsonHandler)
+        client = config.httpClientFactory.newHttpClient()
     }
 
     /**
@@ -33,8 +32,7 @@ class MeiliSearchHttpRequest {
      */
     constructor(client: AbstractHttpClient, factory: RequestFactory) {
         this.client = client
-        this.factory = factory
-        jsonHandler = GsonJsonHandler()
+        this.requestFactory = factory
     }
 
     /**
@@ -60,7 +58,7 @@ class MeiliSearchHttpRequest {
      */
     fun get(api: String, param: String): String {
         val httpResponse = client.get(
-            factory.create(
+            requestFactory.create(
                 HttpMethod.GET,
                 api + param,
                 emptyMap(),
@@ -86,7 +84,7 @@ class MeiliSearchHttpRequest {
      */
     fun post(api: String, body: String?): String {
         val httpResponse = client.post(
-            factory.create(HttpMethod.POST, api, emptyMap(), body)
+            requestFactory.create(HttpMethod.POST, api, emptyMap(), body)
         )
         if (httpResponse.statusCode >= 400) {
             throw MeiliSearchApiException(
@@ -106,7 +104,7 @@ class MeiliSearchHttpRequest {
      * @throws MeiliSearchApiException if the response is an error
      */
     fun put(api: String, body: String?): String {
-        val httpResponse = client.put(factory.create(HttpMethod.PUT, api, emptyMap(), body))
+        val httpResponse = client.put(requestFactory.create(HttpMethod.PUT, api, emptyMap(), body))
         if (httpResponse.statusCode >= 400) {
             throw MeiliSearchApiException(
                 jsonHandler.decode(httpResponse.content, ApiError::class.java)
@@ -125,7 +123,7 @@ class MeiliSearchHttpRequest {
      */
     fun delete(api: String): String {
         val httpResponse = client.put(
-            factory.create<Any?>(HttpMethod.DELETE, api, emptyMap(), null)
+            requestFactory.create<Any?>(HttpMethod.DELETE, api, emptyMap(), null)
         )
         if (httpResponse.statusCode >= 400) {
             throw MeiliSearchApiException(

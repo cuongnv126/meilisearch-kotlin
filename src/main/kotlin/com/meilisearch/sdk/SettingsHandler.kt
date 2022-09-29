@@ -1,7 +1,5 @@
 package com.meilisearch.sdk
 
-import com.google.gson.Gson
-
 /**
  * Settings Handler for manipulation of an Index [Settings]
  *
@@ -9,8 +7,8 @@ import com.google.gson.Gson
  * Refer https://docs.meilisearch.com/reference/api/settings.html
  */
 class SettingsHandler(config: Config) {
-    private val meiliSearchHttpRequest = MeiliSearchHttpRequest(config)
-    private val gson = Gson()
+    private val request = MeiliSearchHttpRequest(config)
+    private val jsonHandler = config.jsonHandlerFactory.newJsonHandler()
 
     /**
      * Gets the settings of a given index Refer
@@ -21,8 +19,8 @@ class SettingsHandler(config: Config) {
      * @throws Exception if an error occurs
      */
     fun getSettings(uid: String): Settings {
-        return gson.fromJson(
-            meiliSearchHttpRequest.get("/indexes/$uid/settings"), Settings::class.java
+        return jsonHandler.decode(
+            request.get("/indexes/$uid/settings"), Settings::class.java
         )
     }
 
@@ -36,8 +34,8 @@ class SettingsHandler(config: Config) {
      * @throws Exception if an error occurs
      */
     fun updateSettings(uid: String, settings: Settings): Task {
-        return gson.fromJson(
-            meiliSearchHttpRequest.post(
+        return jsonHandler.decode(
+            request.post(
                 "/indexes/$uid/settings", settings.getUpdateQuery()
             ),
             Task::class.java
@@ -53,8 +51,8 @@ class SettingsHandler(config: Config) {
      * @throws Exception if an error occurs
      */
     fun resetSettings(uid: String): Task {
-        return gson.fromJson(
-            meiliSearchHttpRequest.delete("/indexes/$uid/settings"), Task::class.java
+        return jsonHandler.decode(
+            request.delete("/indexes/$uid/settings"), Task::class.java
         )
     }
 
@@ -67,8 +65,8 @@ class SettingsHandler(config: Config) {
      * @throws Exception if an error occurs
      */
     fun getRankingRuleSettings(uid: String): Array<String> {
-        return gson.fromJson(
-            meiliSearchHttpRequest.get("/indexes/$uid/settings/ranking-rules"),
+        return jsonHandler.decode(
+            request.get("/indexes/$uid/settings/ranking-rules"),
             Array<String>::class.java
         )
     }
@@ -82,10 +80,10 @@ class SettingsHandler(config: Config) {
      * @return Task instance
      * @throws Exception if an error occurs
      */
-    fun updateRankingRuleSettings(uid: String, rankingRules: Array<String?>?): Task {
-        val rankingRulesAsJson = gson.toJson(rankingRules)
-        return gson.fromJson(
-            meiliSearchHttpRequest.post(
+    fun updateRankingRuleSettings(uid: String, rankingRules: Array<String?>): Task {
+        val rankingRulesAsJson = jsonHandler.encode(rankingRules)
+        return jsonHandler.decode(
+            request.post(
                 "/indexes/$uid/settings/ranking-rules", rankingRulesAsJson
             ),
             Task::class.java
@@ -101,8 +99,8 @@ class SettingsHandler(config: Config) {
      * @throws Exception if an error occurs
      */
     fun resetRankingRulesSettings(uid: String): Task {
-        return gson.fromJson(
-            meiliSearchHttpRequest.delete("/indexes/$uid/settings/ranking-rules"),
+        return jsonHandler.decode(
+            request.delete("/indexes/$uid/settings/ranking-rules"),
             Task::class.java
         )
     }
@@ -116,8 +114,8 @@ class SettingsHandler(config: Config) {
      * @throws Exception if an error occurs
      */
     fun getSynonymsSettings(uid: String): Map<String, Array<String>> {
-        return gson.fromJson<Map<String, Array<String>>>(
-            meiliSearchHttpRequest.get("/indexes/$uid/settings/synonyms"), MutableMap::class.java
+        return jsonHandler.decode(
+            request.get("/indexes/$uid/settings/synonyms"), MutableMap::class.java
         )
     }
 
@@ -130,10 +128,10 @@ class SettingsHandler(config: Config) {
      * @return Task instance
      * @throws Exception if an error occurs
      */
-    fun updateSynonymsSettings(uid: String, synonyms: Map<String?, Array<String?>?>?): Task {
-        val synonymsAsJson = gson.toJson(synonyms)
-        return gson.fromJson(
-            meiliSearchHttpRequest.post(
+    fun updateSynonymsSettings(uid: String, synonyms: Map<String?, Array<String?>?>): Task {
+        val synonymsAsJson = jsonHandler.encode(synonyms)
+        return jsonHandler.decode(
+            request.post(
                 "/indexes/$uid/settings/synonyms", synonymsAsJson
             ),
             Task::class.java
@@ -149,8 +147,8 @@ class SettingsHandler(config: Config) {
      * @throws Exception if an error occurs
      */
     fun resetSynonymsSettings(uid: String?): Task {
-        return gson.fromJson(
-            meiliSearchHttpRequest.delete("/indexes/$uid/settings/synonyms"),
+        return jsonHandler.decode(
+            request.delete("/indexes/$uid/settings/synonyms"),
             Task::class.java
         )
     }
@@ -164,8 +162,8 @@ class SettingsHandler(config: Config) {
      * @throws Exception if an error occurs
      */
     fun getStopWordsSettings(uid: String?): Array<String> {
-        return gson.fromJson(
-            meiliSearchHttpRequest.get("/indexes/$uid/settings/stop-words"),
+        return jsonHandler.decode(
+            request.get("/indexes/$uid/settings/stop-words"),
             Array<String>::class.java
         )
     }
@@ -179,11 +177,10 @@ class SettingsHandler(config: Config) {
      * @return Task instance
      * @throws Exception if an error occurs
      */
-    @Throws(Exception::class)
-    fun updateStopWordsSettings(uid: String?, stopWords: Array<String?>?): Task {
-        val stopWordsAsJson = gson.toJson(stopWords)
-        return gson.fromJson(
-            meiliSearchHttpRequest.post(
+    fun updateStopWordsSettings(uid: String?, stopWords: Array<String?>): Task {
+        val stopWordsAsJson = jsonHandler.encode(stopWords)
+        return jsonHandler.decode(
+            request.post(
                 "/indexes/$uid/settings/stop-words", stopWordsAsJson
             ),
             Task::class.java
@@ -199,8 +196,8 @@ class SettingsHandler(config: Config) {
      * @throws Exception if an error occurs
      */
     fun resetStopWordsSettings(uid: String?): Task {
-        return gson.fromJson(
-            meiliSearchHttpRequest.delete("/indexes/$uid/settings/stop-words"),
+        return jsonHandler.decode(
+            request.delete("/indexes/$uid/settings/stop-words"),
             Task::class.java
         )
     }
@@ -214,8 +211,8 @@ class SettingsHandler(config: Config) {
      * @throws Exception if an error occurs
      */
     fun getSearchableAttributesSettings(uid: String?): Array<String> {
-        return gson.fromJson(
-            meiliSearchHttpRequest.get("/indexes/$uid/settings/searchable-attributes"),
+        return jsonHandler.decode(
+            request.get("/indexes/$uid/settings/searchable-attributes"),
             Array<String>::class.java
         )
     }
@@ -230,10 +227,10 @@ class SettingsHandler(config: Config) {
      * @return Task instance
      * @throws Exception if an error occurs
      */
-    fun updateSearchableAttributesSettings(uid: String?, searchableAttributes: Array<String?>?): Task {
-        val searchableAttributesAsJson = gson.toJson(searchableAttributes)
-        return gson.fromJson(
-            meiliSearchHttpRequest.post(
+    fun updateSearchableAttributesSettings(uid: String?, searchableAttributes: Array<String?>): Task {
+        val searchableAttributesAsJson = jsonHandler.encode(searchableAttributes)
+        return jsonHandler.decode(
+            request.post(
                 "/indexes/$uid/settings/searchable-attributes",
                 searchableAttributesAsJson
             ),
@@ -250,8 +247,8 @@ class SettingsHandler(config: Config) {
      * @throws Exception if an error occurs
      */
     fun resetSearchableAttributesSettings(uid: String?): Task {
-        return gson.fromJson(
-            meiliSearchHttpRequest.delete(
+        return jsonHandler.decode(
+            request.delete(
                 "/indexes/$uid/settings/searchable-attributes"
             ),
             Task::class.java
@@ -267,8 +264,8 @@ class SettingsHandler(config: Config) {
      * @throws Exception if an error occurs
      */
     fun getDisplayedAttributesSettings(uid: String?): Array<String> {
-        return gson.fromJson(
-            meiliSearchHttpRequest.get("/indexes/$uid/settings/displayed-attributes"),
+        return jsonHandler.decode(
+            request.get("/indexes/$uid/settings/displayed-attributes"),
             Array<String>::class.java
         )
     }
@@ -283,10 +280,10 @@ class SettingsHandler(config: Config) {
      * @return Task instance
      * @throws Exception if an error occurs
      */
-    fun updateDisplayedAttributesSettings(uid: String?, displayAttributes: Array<String?>?): Task {
-        val displayAttributesAsJson = gson.toJson(displayAttributes)
-        return gson.fromJson(
-            meiliSearchHttpRequest.post(
+    fun updateDisplayedAttributesSettings(uid: String?, displayAttributes: Array<String?>): Task {
+        val displayAttributesAsJson = jsonHandler.encode(displayAttributes)
+        return jsonHandler.decode(
+            request.post(
                 "/indexes/$uid/settings/displayed-attributes",
                 displayAttributesAsJson
             ),
@@ -303,8 +300,8 @@ class SettingsHandler(config: Config) {
      * @throws Exception if an error occurs
      */
     fun resetDisplayedAttributesSettings(uid: String?): Task {
-        return gson.fromJson(
-            meiliSearchHttpRequest.delete("/indexes/$uid/settings/displayed-attributes"),
+        return jsonHandler.decode(
+            request.delete("/indexes/$uid/settings/displayed-attributes"),
             Task::class.java
         )
     }
@@ -318,8 +315,8 @@ class SettingsHandler(config: Config) {
      * @throws Exception if an error occurs
      */
     fun getFilterableAttributesSettings(uid: String?): Array<String> {
-        return gson.fromJson(
-            meiliSearchHttpRequest.get("/indexes/$uid/settings/filterable-attributes"),
+        return jsonHandler.decode(
+            request.get("/indexes/$uid/settings/filterable-attributes"),
             Array<String>::class.java
         )
     }
@@ -334,11 +331,10 @@ class SettingsHandler(config: Config) {
      * @return Task instance
      * @throws Exception if an error occurs
      */
-    @Throws(Exception::class)
-    fun updateFilterableAttributesSettings(uid: String?, filterableAttributes: Array<String?>?): Task {
-        val filterableAttributesAsJson = gson.toJson(filterableAttributes)
-        return gson.fromJson(
-            meiliSearchHttpRequest.post(
+    fun updateFilterableAttributesSettings(uid: String?, filterableAttributes: Array<String?>): Task {
+        val filterableAttributesAsJson = jsonHandler.encode(filterableAttributes)
+        return jsonHandler.decode(
+            request.post(
                 "/indexes/$uid/settings/filterable-attributes",
                 filterableAttributesAsJson
             ),
@@ -354,10 +350,9 @@ class SettingsHandler(config: Config) {
      * @return Task instance
      * @throws Exception if an error occurs
      */
-    @Throws(Exception::class)
     fun resetFilterableAttributesSettings(uid: String?): Task {
-        return gson.fromJson(
-            meiliSearchHttpRequest.delete(
+        return jsonHandler.decode(
+            request.delete(
                 "/indexes/$uid/settings/filterable-attributes"
             ),
             Task::class.java
@@ -373,8 +368,8 @@ class SettingsHandler(config: Config) {
      * @throws Exception if an error occurs
      */
     fun getDistinctAttributeSettings(uid: String): String {
-        return gson.fromJson(
-            meiliSearchHttpRequest.get("/indexes/$uid/settings/distinct-attribute"),
+        return jsonHandler.decode(
+            request.get("/indexes/$uid/settings/distinct-attribute"),
             String::class.java
         )
     }
@@ -388,11 +383,10 @@ class SettingsHandler(config: Config) {
      * @return Task instance
      * @throws Exception if an error occurs
      */
-    @Throws(Exception::class)
     fun updateDistinctAttributeSettings(uid: String?, distinctAttribute: String?): Task {
-        val distinctAttributeAsJson = gson.toJson(distinctAttribute)
-        return gson.fromJson(
-            meiliSearchHttpRequest.post(
+        val distinctAttributeAsJson = jsonHandler.encode(distinctAttribute)
+        return jsonHandler.decode(
+            request.post(
                 "/indexes/$uid/settings/distinct-attribute",
                 distinctAttributeAsJson
             ),
@@ -408,10 +402,9 @@ class SettingsHandler(config: Config) {
      * @return Task instance
      * @throws Exception if an error occurs
      */
-    @Throws(Exception::class)
-    fun resetDistinctAttributeSettings(uid: String?): Task {
-        return gson.fromJson(
-            meiliSearchHttpRequest.delete("/indexes/$uid/settings/distinct-attribute"),
+    fun resetDistinctAttributeSettings(uid: String): Task {
+        return jsonHandler.decode(
+            request.delete("/indexes/$uid/settings/distinct-attribute"),
             Task::class.java
         )
     }
@@ -424,9 +417,9 @@ class SettingsHandler(config: Config) {
      * @return a TypoTolerance instance that contains all typo tolerance settings
      * @throws Exception if an error occurs
      */
-    fun getTypoToleranceSettings(uid: String?): TypoTolerance {
-        return gson.fromJson(
-            meiliSearchHttpRequest.get("/indexes/$uid/settings/typo-tolerance"),
+    fun getTypoToleranceSettings(uid: String): TypoTolerance {
+        return jsonHandler.decode(
+            request.get("/indexes/$uid/settings/typo-tolerance"),
             TypoTolerance::class.java
         )
     }
@@ -441,9 +434,9 @@ class SettingsHandler(config: Config) {
      * @throws Exception if an error occurs
      */
     fun updateTypoToleranceSettings(uid: String?, typoTolerance: TypoTolerance?): Task {
-        val typoToleranceAsJson = gson.toJson(typoTolerance)
-        return gson.fromJson(
-            meiliSearchHttpRequest.post(
+        val typoToleranceAsJson = jsonHandler.encode(typoTolerance)
+        return jsonHandler.decode(
+            request.post(
                 "/indexes/$uid/settings/typo-tolerance", typoToleranceAsJson
             ),
             Task::class.java
@@ -459,8 +452,8 @@ class SettingsHandler(config: Config) {
      * @throws Exception if an error occurs
      */
     fun resetTypoToleranceSettings(uid: String?): Task {
-        return gson.fromJson(
-            meiliSearchHttpRequest.delete("/indexes/$uid/settings/typo-tolerance"),
+        return jsonHandler.decode(
+            request.delete("/indexes/$uid/settings/typo-tolerance"),
             Task::class.java
         )
     }

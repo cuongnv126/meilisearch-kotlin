@@ -1,12 +1,11 @@
 package com.meilisearch.sdk
 
-import com.google.gson.Gson
 import com.google.gson.JsonArray
 import java.util.function.Consumer
 
 class Documents(config: Config) {
-    private val meiliSearchHttpRequest = MeiliSearchHttpRequest(config)
-    private val gson = Gson()
+    private val request = MeiliSearchHttpRequest(config)
+    private val jsonHandler = config.jsonHandlerFactory.newJsonHandler()
 
     /**
      * Retrieves the document at the specified uid with the specified identifier
@@ -16,9 +15,9 @@ class Documents(config: Config) {
      * @return String containing the requested document
      * @throws Exception if client request causes an error
      */
-    fun getDocument(uid: String?, identifier: String): String {
+    fun getDocument(uid: String, identifier: String): String {
         val urlPath = "/indexes/$uid/documents/$identifier"
-        return meiliSearchHttpRequest.get(urlPath)
+        return request.get(urlPath)
     }
 
     /**
@@ -28,9 +27,9 @@ class Documents(config: Config) {
      * @return String containing the requested document
      * @throws Exception if the client request causes an error
      */
-    fun getDocuments(uid: String?): String {
+    fun getDocuments(uid: String): String {
         val urlPath = "/indexes/$uid/documents"
-        return meiliSearchHttpRequest.get(urlPath)
+        return request.get(urlPath)
     }
 
     /**
@@ -41,9 +40,9 @@ class Documents(config: Config) {
      * @return String containing the requested document
      * @throws Exception if the client request causes an error
      */
-    fun getDocuments(uid: String?, limit: Int): String {
+    fun getDocuments(uid: String, limit: Int): String {
         val urlQuery = "/indexes/$uid/documents?limit=$limit"
-        return meiliSearchHttpRequest.get(urlQuery)
+        return request.get(urlQuery)
     }
 
     /**
@@ -55,9 +54,9 @@ class Documents(config: Config) {
      * @return String containing the requested document
      * @throws Exception if the client request causes an error
      */
-    fun getDocuments(uid: String?, limit: Int, offset: Int): String {
+    fun getDocuments(uid: String, limit: Int, offset: Int): String {
         val urlQuery = "/indexes/$uid/documents?limit=$limit&offset=$offset"
-        return meiliSearchHttpRequest.get(urlQuery)
+        return request.get(urlQuery)
     }
 
     /**
@@ -70,7 +69,7 @@ class Documents(config: Config) {
      * @return String containing the requested document
      * @throws Exception if the client request causes an error
      */
-    fun getDocuments(uid: String?, limit: Int, offset: Int, attributesToRetrieve: List<String?>?): String {
+    fun getDocuments(uid: String, limit: Int, offset: Int, attributesToRetrieve: List<String?>?): String {
         val attrRetrieve = if (attributesToRetrieve.isNullOrEmpty()) listOf("*") else attributesToRetrieve
         val attrRetrieveString = attrRetrieve.joinToString(",")
 
@@ -82,7 +81,7 @@ class Documents(config: Config) {
             + offset
             + "&attributesToRetrieve="
             + attrRetrieveString)
-        return meiliSearchHttpRequest.get(urlQuery)
+        return request.get(urlQuery)
     }
 
     /**
@@ -95,7 +94,7 @@ class Documents(config: Config) {
      * @throws Exception if the client request causes an error
      */
     fun addDocuments(
-        uid: String?,
+        uid: String,
         document: String?,
         primaryKey: String?
     ): Task {
@@ -103,7 +102,7 @@ class Documents(config: Config) {
         if (primaryKey != null) {
             urlQuery += "?primaryKey=$primaryKey"
         }
-        return gson.fromJson(meiliSearchHttpRequest.post(urlQuery, document), Task::class.java)
+        return jsonHandler.decode(request.post(urlQuery, document), Task::class.java)
     }
 
     /**
@@ -116,7 +115,7 @@ class Documents(config: Config) {
      * @throws Exception if the client request causes an error
      */
     fun updateDocuments(
-        uid: String?,
+        uid: String,
         document: String?,
         primaryKey: String?
     ): Task {
@@ -124,7 +123,7 @@ class Documents(config: Config) {
         if (primaryKey != null) {
             urlPath += "?primaryKey=$primaryKey"
         }
-        return gson.fromJson(meiliSearchHttpRequest.put(urlPath, document), Task::class.java)
+        return jsonHandler.decode(request.put(urlPath, document), Task::class.java)
     }
 
     /**
@@ -135,9 +134,9 @@ class Documents(config: Config) {
      * @return Meilisearch's Task API response
      * @throws Exception if the client request causes an error
      */
-    fun deleteDocument(uid: String?, identifier: String): Task {
+    fun deleteDocument(uid: String, identifier: String): Task {
         val urlPath = "/indexes/$uid/documents/$identifier"
-        return gson.fromJson(meiliSearchHttpRequest.delete(urlPath), Task::class.java)
+        return jsonHandler.decode(request.delete(urlPath), Task::class.java)
     }
 
     /**
@@ -149,7 +148,7 @@ class Documents(config: Config) {
      * @throws Exception if the client request causes an error
      */
     fun deleteDocuments(
-        uid: String?,
+        uid: String,
         identifiers: List<String?>
     ): Task {
         val urlPath = "/indexes/$uid/documents/delete-batch"
@@ -159,8 +158,8 @@ class Documents(config: Config) {
                 string
             )
         })
-        return gson.fromJson(
-            meiliSearchHttpRequest.post(urlPath, requestData.toString()), Task::class.java
+        return jsonHandler.decode(
+            request.post(urlPath, requestData.toString()), Task::class.java
         )
     }
 
@@ -171,8 +170,8 @@ class Documents(config: Config) {
      * @return Meilisearch's Task API response
      * @throws Exception if the client request causes an error
      */
-    fun deleteAllDocuments(uid: String?): Task {
+    fun deleteAllDocuments(uid: String): Task {
         val urlPath = "/indexes/$uid/documents"
-        return gson.fromJson(meiliSearchHttpRequest.delete(urlPath), Task::class.java)
+        return jsonHandler.decode(request.delete(urlPath), Task::class.java)
     }
 }

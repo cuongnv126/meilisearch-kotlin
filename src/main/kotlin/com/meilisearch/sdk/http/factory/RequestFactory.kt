@@ -7,7 +7,7 @@ interface RequestFactory {
     fun <T> create(
         method: HttpMethod,
         path: String,
-        headers: Map<String?, String?>?,
+        headers: Map<String, String>?,
         content: T?
     ): HttpRequest<*>
 }

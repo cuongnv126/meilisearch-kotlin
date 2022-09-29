@@ -2,10 +2,10 @@ package com.meilisearch.sdk.http.request
 
 import java.nio.charset.StandardCharsets
 
-open class BasicHttpRequest(
+class BasicHttpRequest(
     override val method: HttpMethod,
-    override val path: String?,
-    override val headers: Map<String?, String?>?,
+    override val path: String,
+    override val headers: Map<String, String>?,
     override val content: String?
 ) : HttpRequest<String?> {
 

@@ -1,11 +1,9 @@
 package com.meilisearch.sdk.http
 
-import com.meilisearch.sdk.Config
 import com.meilisearch.sdk.http.request.HttpMethod
 import com.meilisearch.sdk.http.request.HttpRequest
 import com.meilisearch.sdk.http.response.BasicHttpResponse
 import com.meilisearch.sdk.http.response.HttpResponse
-import java.net.URL
 import okhttp3.MediaType
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
@@ -15,19 +13,20 @@ import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.Response
 
 class CustomOkHttpClient(
-    config: Config,
     private val client: OkHttpClient = OkHttpClient()
-) : AbstractHttpClient(config) {
+) : AbstractHttpClient() {
 
     private fun getBodyFromRequest(request: HttpRequest<*>): RequestBody {
         return if (request.hasContent()) request.contentAsBytes.toRequestBody(JSON) else EMPTY_REQUEST_BODY
     }
 
     private fun buildRequest(request: HttpRequest<*>): Request {
-        val url = URL(config.hostUrl + request.path)
         val builder = Request.Builder()
-        builder.url(url)
-        builder.addHeader("Authorization", config.bearerApiKey)
+            .url(request.path)
+
+        request.headers?.forEach { (key, value) ->
+            builder.addHeader(key, value)
+        }
 
         when (request.method) {
             HttpMethod.GET -> builder.get()

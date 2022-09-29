@@ -24,9 +24,8 @@ class JsonbJsonHandler : JsonHandler {
     }
 
     /** {@inheritDoc}  */
-    @Throws(Exception::class)
-    override fun encode(o: Any): String? {
-        return if (o.javaClass == String::class.java) {
+    override fun encode(o: Any?): String? {
+        return if (o?.javaClass == String::class.java) {
             o as String?
         } else try {
             mapper.toJson(o)
@@ -37,7 +36,6 @@ class JsonbJsonHandler : JsonHandler {
     }
 
     /** {@inheritDoc}  */
-    @Throws(Exception::class)
     override fun <T> decode(o: Any?, targetClass: Class<*>, vararg parameters: Class<*>?): T {
         if (o == null) {
             // todo: use dedicated exception

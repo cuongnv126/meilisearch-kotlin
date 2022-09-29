@@ -1,6 +1,6 @@
 package com.meilisearch.sdk
 
-import com.google.gson.Gson
+import com.meilisearch.sdk.shared.SharedObject
 import java.util.Date
 
 class Task(
@@ -21,10 +21,6 @@ class Task(
      * @return JSON string of the Task object
      */
     override fun toString(): String {
-        return gsonTask.toJson(this)
-    }
-
-    companion object {
-        private val gsonTask = Gson()
+        return SharedObject.gson.toJson(this)
     }
 }

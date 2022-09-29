@@ -1,6 +1,6 @@
 package com.meilisearch.sdk
 
-import com.google.gson.Gson
+import com.meilisearch.sdk.json.GsonJsonHandler
 import com.meilisearch.sdk.model.SearchResult
 import java.io.Serializable
 import org.json.JSONArray
@@ -12,12 +12,13 @@ class Index(
 ) : Serializable {
     var primaryKey: String? = null
 
+    private val jsonHandler = GsonJsonHandler()
+
     private lateinit var config: Config
     private lateinit var documents: Documents
     private lateinit var tasksHandler: TasksHandler
     private lateinit var search: Search
     private lateinit var settingsHandler: SettingsHandler
-    private val gson = Gson()
 
     /**
      * Sets the Meilisearch configuration for the index
@@ -324,7 +325,7 @@ class Index(
      * @return Task instance
      * @throws Exception if an error occurs
      */
-    fun updateRankingRuleSettings(rankingRules: Array<String?>?): Task {
+    fun updateRankingRuleSettings(rankingRules: Array<String?>): Task {
         return settingsHandler.updateRankingRuleSettings(uid, rankingRules)
     }
 
@@ -356,7 +357,7 @@ class Index(
      * @return Task instance
      * @throws Exception if an error occurs
      */
-    fun updateSynonymsSettings(synonyms: Map<String?, Array<String?>?>?): Task {
+    fun updateSynonymsSettings(synonyms: Map<String?, Array<String?>?>): Task {
         return settingsHandler.updateSynonymsSettings(uid, synonyms)
     }
 
@@ -388,7 +389,7 @@ class Index(
      * @return Task instance
      * @throws Exception if an error occurs
      */
-    fun updateStopWordsSettings(stopWords: Array<String?>?): Task {
+    fun updateStopWordsSettings(stopWords: Array<String?>): Task {
         return settingsHandler.updateStopWordsSettings(uid, stopWords)
     }
 
@@ -420,7 +421,7 @@ class Index(
      * @return Task instance
      * @throws Exception if an error occurs
      */
-    fun updateSearchableAttributesSettings(searchableAttributes: Array<String?>?): Task {
+    fun updateSearchableAttributesSettings(searchableAttributes: Array<String?>): Task {
         return settingsHandler.updateSearchableAttributesSettings(
             uid, searchableAttributes
         )
@@ -454,7 +455,7 @@ class Index(
      * @return Task instance
      * @throws Exception if an error occurs
      */
-    fun updateDisplayedAttributesSettings(displayAttributes: Array<String?>?): Task {
+    fun updateDisplayedAttributesSettings(displayAttributes: Array<String?>): Task {
         return settingsHandler.updateDisplayedAttributesSettings(uid, displayAttributes)
     }
 
@@ -487,7 +488,7 @@ class Index(
      * @return Task instance
      * @throws Exception if an error occurs
      */
-    fun updateFilterableAttributesSettings(filterableAttributes: Array<String?>?): Task {
+    fun updateFilterableAttributesSettings(filterableAttributes: Array<String?>): Task {
         return settingsHandler.updateFilterableAttributesSettings(
             uid, filterableAttributes
         )
@@ -617,7 +618,7 @@ class Index(
     fun fetchPrimaryKey() {
         val requestQuery = "/indexes/$uid"
         val request = MeiliSearchHttpRequest(config)
-        val retrievedIndex = gson.fromJson(request.get(requestQuery), Index::class.java)
+        val retrievedIndex: Index = jsonHandler.decode(request.get(requestQuery), Index::class.java)
         primaryKey = retrievedIndex.primaryKey
     }
 }

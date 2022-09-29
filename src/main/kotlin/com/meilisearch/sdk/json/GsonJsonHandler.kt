@@ -2,21 +2,17 @@ package com.meilisearch.sdk.json
 
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import com.meilisearch.sdk.shared.SharedObject
 
-class GsonJsonHandler : JsonHandler {
-    private val gson: Gson
+class GsonJsonHandler(
+    private val gson: Gson = SharedObject.gson
+) : JsonHandler {
 
-    constructor() {
-        gson = Gson()
-    }
+    override fun encode(o: Any?): String? {
+        if (o == null) return null
 
-    constructor(gson: Gson) {
-        this.gson = gson
-    }
-
-    override fun encode(o: Any): String? {
         return if (o.javaClass == String::class.java) {
-            o as String?
+            o as String
         } else try {
             gson.toJson(o)
         } catch (e: Exception) {

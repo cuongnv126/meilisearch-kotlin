@@ -3,7 +3,7 @@ package com.meilisearch.sdk
 import com.google.gson.JsonObject
 
 class IndexesHandler(config: Config) {
-    private val meiliSearchHttpRequest = MeiliSearchHttpRequest(config)
+    private val request = MeiliSearchHttpRequest(config)
 
     /**
      * Creates an index with a unique identifier
@@ -27,7 +27,7 @@ class IndexesHandler(config: Config) {
         if (primaryKey != null) {
             params.addProperty("primaryKey", primaryKey)
         }
-        return meiliSearchHttpRequest.post("/indexes", params.toString())
+        return request.post("/indexes", params.toString())
     }
 
     /**
@@ -37,9 +37,9 @@ class IndexesHandler(config: Config) {
      * @return Meilisearch API response
      * @throws Exception if an error occurs
      */
-    operator fun get(uid: String): String {
+    fun get(uid: String): String {
         val requestQuery = "/indexes/$uid"
-        return meiliSearchHttpRequest.get(requestQuery)
+        return request.get(requestQuery)
     }
 
     /**
@@ -48,7 +48,7 @@ class IndexesHandler(config: Config) {
      * @return Meilisearch API response
      * @throws Exception if an error occurs
      */
-    fun getAll() = meiliSearchHttpRequest.get("/indexes")
+    fun getAll() = request.get("/indexes")
 
     /**
      * Updates the primary key of an index in the Meilisearch instance
@@ -62,7 +62,7 @@ class IndexesHandler(config: Config) {
         val jsonObject = JsonObject()
         jsonObject.addProperty("primaryKey", primaryKey)
         val requestQuery = "/indexes/$uid"
-        return meiliSearchHttpRequest.put(requestQuery, jsonObject.toString())
+        return request.put(requestQuery, jsonObject.toString())
     }
 
     /**
@@ -74,6 +74,6 @@ class IndexesHandler(config: Config) {
      */
     fun delete(uid: String): String {
         val requestQuery = "/indexes/$uid"
-        return meiliSearchHttpRequest.delete(requestQuery)
+        return request.delete(requestQuery)
     }
 }

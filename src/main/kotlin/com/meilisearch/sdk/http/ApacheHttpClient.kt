@@ -1,6 +1,5 @@
 package com.meilisearch.sdk.http
 
-import com.meilisearch.sdk.Config
 import com.meilisearch.sdk.http.request.HttpRequest
 import com.meilisearch.sdk.http.response.BasicHttpResponse
 import com.meilisearch.sdk.http.response.HttpResponse
@@ -25,12 +24,12 @@ import org.apache.hc.core5.util.Timeout
 class ApacheHttpClient : AbstractHttpClient {
     private val client: HttpAsyncClient
 
-    constructor(config: Config) : super(config) {
+    constructor() {
         val ioReactorConfig = IOReactorConfig.custom().setSoTimeout(Timeout.ofSeconds(5)).build()
         client = HttpAsyncClients.custom().setIOReactorConfig(ioReactorConfig).build()
     }
 
-    constructor(config: Config, client: HttpAsyncClient) : super(config) {
+    constructor(client: HttpAsyncClient) {
         this.client = client
     }
 
@@ -71,8 +70,14 @@ class ApacheHttpClient : AbstractHttpClient {
 
     private fun mapRequest(request: HttpRequest<*>): SimpleHttpRequest {
         val httpRequest = SimpleHttpRequest(request.method.name, request.path)
-        if (request.hasContent()) httpRequest.setBody(request.contentAsBytes, ContentType.APPLICATION_JSON)
-        httpRequest.addHeader("Authorization", config.bearerApiKey)
+
+        if (request.hasContent()) {
+            httpRequest.setBody(request.contentAsBytes, ContentType.APPLICATION_JSON)
+        }
+
+        request.headers?.forEach { (key, value) ->
+            httpRequest.addHeader(key, value)
+        }
         return httpRequest
     }
 

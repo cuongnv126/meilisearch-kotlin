@@ -4,8 +4,8 @@ import com.meilisearch.sdk.json.GsonJsonHandler
 import com.meilisearch.sdk.model.SearchResult
 
 class Search(config: Config) {
-    private val meiliSearchHttpRequest = MeiliSearchHttpRequest(config)
-    private val jsonGson = GsonJsonHandler()
+    private val request = MeiliSearchHttpRequest(config)
+    private val jsonHandler = GsonJsonHandler()
 
     /**
      * Performs a search on a given index with a given query
@@ -18,7 +18,7 @@ class Search(config: Config) {
     fun rawSearch(uid: String?, q: String?): String {
         val requestQuery = "/indexes/$uid/search"
         val sr = SearchRequest().q(q)
-        return meiliSearchHttpRequest.post(requestQuery, sr.getQuery())
+        return request.post(requestQuery, sr.getQuery())
     }
 
     /**
@@ -79,7 +79,7 @@ class Search(config: Config) {
             facetsDistribution,
             sort
         )
-        return meiliSearchHttpRequest.post(requestQuery, sr.getQuery())
+        return request.post(requestQuery, sr.getQuery())
     }
 
     /**
@@ -92,7 +92,7 @@ class Search(config: Config) {
      */
     fun rawSearch(uid: String?, sr: SearchRequest): String {
         val requestQuery = "/indexes/$uid/search"
-        return meiliSearchHttpRequest.post(requestQuery, sr.getQuery())
+        return request.post(requestQuery, sr.getQuery())
     }
 
     /**
@@ -104,7 +104,7 @@ class Search(config: Config) {
      * @throws Exception Search Exception or Client Error
      */
     fun search(uid: String?, q: String?): SearchResult? {
-        return jsonGson.decode(rawSearch(uid, q), SearchResult::class.java)
+        return jsonHandler.decode(rawSearch(uid, q), SearchResult::class.java)
     }
 
     /**
@@ -147,7 +147,7 @@ class Search(config: Config) {
         facetsDistribution: Array<String?>?,
         sort: Array<String?>?
     ): SearchResult {
-        return jsonGson.decode(
+        return jsonHandler.decode(
             rawSearch(
                 uid,
                 q,
@@ -178,6 +178,6 @@ class Search(config: Config) {
      * @throws Exception Search Exception or Client Error
      */
     fun search(uid: String?, sr: SearchRequest): SearchResult {
-        return jsonGson.decode(rawSearch(uid, sr), SearchResult::class.java)
+        return jsonHandler.decode(rawSearch(uid, sr), SearchResult::class.java)
     }
 }

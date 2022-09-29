@@ -10,7 +10,7 @@ import com.google.gson.reflect.TypeToken
  * Refer https://docs.meilisearch.com/reference/api/keys.html
  */
 class KeysHandler(config: Config) {
-    private val meiliSearchHttpRequest = MeiliSearchHttpRequest(config)
+    private val request = MeiliSearchHttpRequest(config)
     private val gson = GsonBuilder().serializeNulls().setDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'").create()
 
     /**
@@ -22,7 +22,7 @@ class KeysHandler(config: Config) {
      */
     fun getKey(uid: String): Key {
         val urlPath = "/keys/$uid"
-        return gson.fromJson(meiliSearchHttpRequest.get(urlPath), Key::class.java)
+        return gson.fromJson(request.get(urlPath), Key::class.java)
     }
 
     /**
@@ -34,7 +34,7 @@ class KeysHandler(config: Config) {
     fun getKeys(): Array<Key>? {
         val urlPath = "/keys"
         val result = gson.fromJson<Result<Key>>(
-            meiliSearchHttpRequest.get(urlPath),
+            request.get(urlPath),
             object : TypeToken<Result<Key?>?>() {}.type
         )
         return result.results
@@ -50,7 +50,7 @@ class KeysHandler(config: Config) {
     fun createKey(options: Key): Key {
         val urlPath = "/keys"
         return gson.fromJson(
-            meiliSearchHttpRequest.post(urlPath, options.toString()), Key::class.java
+            request.post(urlPath, options.toString()), Key::class.java
         )
     }
 
@@ -62,6 +62,6 @@ class KeysHandler(config: Config) {
      */
     fun deleteKey(key: String) {
         val urlPath = "/keys/$key"
-        meiliSearchHttpRequest.delete(urlPath)
+        request.delete(urlPath)
     }
 }

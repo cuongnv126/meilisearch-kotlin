@@ -4,10 +4,10 @@ import java.io.Serializable
 
 /** This is class wraps errors sent by Meilisearch API  */
 class ApiError(
-    val message: String,
-    val errorCode: String,
-    val errorType: String,
-    val errorLink: String
+    val message: String?,
+    val errorCode: String?,
+    val errorType: String?,
+    val errorLink: String?
 ) : Serializable {
 
     override fun toString(): String {

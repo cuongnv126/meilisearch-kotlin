@@ -6,7 +6,7 @@ interface JsonHandler {
      * @return the serialized Object `o`
      * @throws Exception wrapped exceptions of the used json library
      */
-    fun encode(o: Any): String?
+    fun encode(o: Any?): String?
 
     /**
      * @param o Object to deserialize, most of the time this is a string

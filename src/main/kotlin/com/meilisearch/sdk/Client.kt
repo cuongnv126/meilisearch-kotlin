@@ -5,8 +5,8 @@ package com.meilisearch.sdk
 
 import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm
-import com.google.gson.Gson
 import com.meilisearch.sdk.exceptions.MeiliSearchException
+import com.meilisearch.sdk.json.GsonJsonHandler
 import java.util.Date
 import java.util.TimeZone
 
@@ -16,8 +16,10 @@ class Client(
     private val indexesHandler: IndexesHandler = IndexesHandler(config)
     private val tasksHandler: TasksHandler = TasksHandler(config)
     private val keysHandler: KeysHandler = KeysHandler(config)
-    private val gson: Gson = Gson()
     private val dumpHandler: DumpHandler = DumpHandler(config)
+
+    //    private val gson = SharedObject.gson
+    private val jsonHandler = GsonJsonHandler()
 
     /**
      * Creates index Refer https://docs.meilisearch.com/reference/api/indexes.html#create-an-index
@@ -28,7 +30,7 @@ class Client(
      */
     @JvmOverloads
     fun createIndex(uid: String, primaryKey: String? = null): Task {
-        return gson.fromJson(indexesHandler.create(uid, primaryKey), Task::class.java)
+        return jsonHandler.decode(indexesHandler.create(uid, primaryKey), Task::class.java)
     }
 
     /**
@@ -39,7 +41,7 @@ class Client(
      * @throws Exception if an error occurs
      */
     fun getIndexList(): Array<Index> {
-        val meiliSearchIndexList = gson.fromJson(
+        val meiliSearchIndexList: Array<Index> = jsonHandler.decode(
             getRawIndexList(),
             Array<Index>::class.java
         )
@@ -81,9 +83,9 @@ class Client(
      * @throws Exception if an error occurs
      */
     fun getIndex(uid: String): Index {
-        val indexes = gson.fromJson(getRawIndex(uid), Index::class.java)
-        indexes.setConfig(config)
-        return indexes
+        val index: Index = jsonHandler.decode(getRawIndex(uid), Index::class.java)
+        index.setConfig(config)
+        return index
     }
 
     /**
@@ -94,8 +96,8 @@ class Client(
      * @return Meilisearch API response as String
      * @throws Exception if an error occurs
      */
-    fun getRawIndex(uid: String): String? {
-        return indexesHandler[uid]
+    fun getRawIndex(uid: String): String {
+        return indexesHandler.get(uid)
     }
 
     /**
@@ -108,7 +110,7 @@ class Client(
      * @throws Exception if an error occurs
      */
     fun updateIndex(uid: String, primaryKey: String?): Task {
-        return gson.fromJson(indexesHandler.updatePrimaryKey(uid, primaryKey), Task::class.java)
+        return jsonHandler.decode(indexesHandler.updatePrimaryKey(uid, primaryKey), Task::class.java)
     }
 
     /**
@@ -120,7 +122,7 @@ class Client(
      * @throws Exception if an error occurs
      */
     fun deleteIndex(uid: String): Task {
-        return gson.fromJson(indexesHandler.delete(uid), Task::class.java)
+        return jsonHandler.decode(indexesHandler.delete(uid), Task::class.java)
     }
 
     /**
@@ -240,7 +242,7 @@ class Client(
             options.apiKey
         }
         TimeZone.setDefault(TimeZone.getTimeZone("UTC"))
-        if (options.expiresAt != null && now.after(options.expiresAt as Date)) {
+        if (options.expiresAt != null && now.after(options.expiresAt)) {
             throw MeiliSearchException("The date expiresAt should be in the future.")
         }
         if (secret === "" || secret.length <= 8) {
