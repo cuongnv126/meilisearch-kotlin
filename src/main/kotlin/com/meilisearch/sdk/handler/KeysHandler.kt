@@ -13,7 +13,7 @@ import com.meilisearch.sdk.model.Key
  *
  * Refer https://docs.meilisearch.com/reference/api/keys.html
  */
-class KeysHandler(config: Config) {
+internal class KeysHandler(config: Config) {
     private val request = MeiliSearchHttpRequest(config)
     private val gson = GsonBuilder().serializeNulls().setDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'").create()
 

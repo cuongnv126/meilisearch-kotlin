@@ -12,7 +12,7 @@ import com.meilisearch.sdk.model.Settings
  *
  * Refer https://docs.meilisearch.com/reference/api/settings.html
  */
-class SettingsHandler(config: Config) {
+internal class SettingsHandler(config: Config) {
     private val request = MeiliSearchHttpRequest(config)
     private val jsonHandler = config.jsonHandlerFactory.newJsonHandler()
 

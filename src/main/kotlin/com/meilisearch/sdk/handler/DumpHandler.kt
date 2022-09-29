@@ -4,7 +4,7 @@ import com.meilisearch.sdk.Config
 import com.meilisearch.sdk.http.MeiliSearchHttpRequest
 import com.meilisearch.sdk.model.Dump
 
-class DumpHandler(config: Config) {
+internal class DumpHandler(config: Config) {
     private val request = MeiliSearchHttpRequest(config)
     private val jsonHandler = config.jsonHandlerFactory.newJsonHandler()
 

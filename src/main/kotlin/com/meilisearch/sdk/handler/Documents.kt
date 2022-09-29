@@ -6,7 +6,7 @@ import com.meilisearch.sdk.http.MeiliSearchHttpRequest
 import com.meilisearch.sdk.model.Task
 import java.util.function.Consumer
 
-class Documents(config: Config) {
+internal class Documents(config: Config) {
     private val request = MeiliSearchHttpRequest(config)
     private val jsonHandler = config.jsonHandlerFactory.newJsonHandler()
 

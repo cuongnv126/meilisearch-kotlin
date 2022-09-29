@@ -12,7 +12,7 @@ import java.util.Date
  *
  * Refer https://docs.meilisearch.com/reference/api/tasks.html
  */
-class TasksHandler(config: Config) {
+internal class TasksHandler(config: Config) {
     private val request = MeiliSearchHttpRequest(config)
     private val jsonHandler = config.jsonHandlerFactory.newJsonHandler()
 

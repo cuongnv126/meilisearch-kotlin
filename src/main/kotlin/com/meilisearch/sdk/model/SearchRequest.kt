@@ -18,37 +18,35 @@ import org.json.JSONObject
  * terms, default value: *
  * @param attributesToHighlight Attributes whose values will contain highlighted matching terms
  * @param filterArray String array that can take multiple nested filters
- * @param matches Defines whether an object that contains information about the matches should
+ * @param showMatchesPosition Defines whether an object that contains information about the matches should
  * be returned or not
  * @param facetsDistribution Facets for which to retrieve the matching count
  * @param sort Sort queries by an attribute value
  */
 class SearchRequest(
     private var q: String? = null,
-    private var offset: Int = 0,
-    private var limit: Int = 20,
-    private var attributesToRetrieve: Array<String?>? = null,
-    private var attributesToCrop: Array<String?>? = null,
-    private var cropLength: Int = 200,
+    private var offset: Int? = null,
+    private var limit: Int? = null,
+    private var attributesToRetrieve: Array<String>? = null,
+    private var attributesToCrop: Array<String>? = null,
+    private var cropLength: Int? = null,
     private var cropMarker: String? = null,
     private var highlightPreTag: String? = null,
     private var highlightPostTag: String? = null,
-    private var attributesToHighlight: Array<String?>? = null,
-    private var filter: Array<String?>? = null,
+    private var attributesToHighlight: Array<String>? = null,
+    private var filter: Array<String>? = null,
     private var filterArray: Array<Array<String>>? = null,
-    private var matches: Boolean = false,
-    private var facetsDistribution: Array<String?>? = null,
-    private var sort: Array<String?>? = null,
+    private var showMatchesPosition: Boolean? = false,
+    private var facetsDistribution: Array<String>? = null,
+    private var sort: Array<String>? = null,
 ) {
-    /**
-     * Method to set the Query String
-     *
-     * @param q Query String
-     * @return altered SearchRequest
-     */
-    fun q(q: String?): SearchRequest {
-        this.q = q
+    private inline fun self(builder: SearchRequest.() -> Unit): SearchRequest {
+        builder(this)
         return this
+    }
+
+    fun q(q: String?) = self {
+        this.q = q
     }
 
     /**
@@ -57,9 +55,8 @@ class SearchRequest(
      * @param offset Number of documents to skip
      * @return altered SearchRequest
      */
-    fun setOffset(offset: Int): SearchRequest {
+    fun offset(offset: Int) = self {
         this.offset = offset
-        return this
     }
 
     /**
@@ -68,9 +65,8 @@ class SearchRequest(
      * @param limit Maximum number of documents returned
      * @return altered SearchRequest
      */
-    fun setLimit(limit: Int): SearchRequest {
+    fun limit(limit: Int) = self {
         this.limit = limit
-        return this
     }
 
     /**
@@ -79,9 +75,8 @@ class SearchRequest(
      * @param attributesToRetrieve Attributes to display in the returned documents
      * @return altered SearchRequest
      */
-    fun setAttributesToRetrieve(attributesToRetrieve: Array<String?>?): SearchRequest {
+    fun attributesToRetrieve(attributesToRetrieve: Array<String>?) = self {
         this.attributesToRetrieve = attributesToRetrieve
-        return this
     }
 
     /**
@@ -90,9 +85,8 @@ class SearchRequest(
      * @param attributesToCrop Attributes whose values have been cropped
      * @return altered SearchRequest
      */
-    fun setAttributesToCrop(attributesToCrop: Array<String?>?): SearchRequest {
+    fun attributesToCrop(attributesToCrop: Array<String>?) = self {
         this.attributesToCrop = attributesToCrop
-        return this
     }
 
     /**
@@ -101,9 +95,8 @@ class SearchRequest(
      * @param cropLength Length used to crop field values
      * @return altered SearchRequest
      */
-    fun setCropLength(cropLength: Int): SearchRequest {
+    fun cropLength(cropLength: Int) = self {
         this.cropLength = cropLength
-        return this
     }
 
     /**
@@ -112,9 +105,8 @@ class SearchRequest(
      * @param cropMarker Marker used to crop field values
      * @return altered SearchRequest
      */
-    fun setCropMarker(cropMarker: String?): SearchRequest {
+    fun cropMarker(cropMarker: String?) = self {
         this.cropMarker = cropMarker
-        return this
     }
 
     /**
@@ -123,9 +115,8 @@ class SearchRequest(
      * @param highlightPreTag Highlight tag use before every highlighted query terms
      * @return altered SearchRequest
      */
-    fun setHighlightPreTag(highlightPreTag: String?): SearchRequest {
+    fun highlightPreTag(highlightPreTag: String?) = self {
         this.highlightPreTag = highlightPreTag
-        return this
     }
 
     /**
@@ -134,9 +125,8 @@ class SearchRequest(
      * @param highlightPostTag Highlight tag use after every highlighted query terms
      * @return altered SearchRequest
      */
-    fun setHighlightPostTag(highlightPostTag: String?): SearchRequest {
+    fun highlightPostTag(highlightPostTag: String?) = self {
         this.highlightPostTag = highlightPostTag
-        return this
     }
 
     /**
@@ -145,9 +135,8 @@ class SearchRequest(
      * @param attributesToHighlight Attributes whose values will contain highlighted matching terms
      * @return altered SearchRequest
      */
-    fun setAttributesToHighlight(attributesToHighlight: Array<String?>?): SearchRequest {
+    fun attributesToHighlight(attributesToHighlight: Array<String>?) = self {
         this.attributesToHighlight = attributesToHighlight
-        return this
     }
 
     /**
@@ -156,18 +145,12 @@ class SearchRequest(
      * @param filter Filter queries by an attribute value
      * @return altered SearchRequest
      */
-    fun setFilter(filter: Array<String?>?): SearchRequest {
-        if (filter != null) {
-            this.filter = filter
-        }
-        return this
+    fun filter(filter: Array<String>?) = self {
+        this.filter = filter
     }
 
-    fun setFilterArray(filterArray: Array<Array<String>>?): SearchRequest {
-        if (filterArray != null) {
-            this.filterArray = filterArray
-        }
-        return this
+    fun filterArray(filterArray: Array<Array<String>>?) = self {
+        this.filterArray = filterArray
     }
 
     /**
@@ -177,9 +160,8 @@ class SearchRequest(
      * be returned or not
      * @return altered SearchRequest
      */
-    fun setMatches(matches: Boolean): SearchRequest {
-        this.matches = matches
-        return this
+    fun showMatchesPosition(matches: Boolean) = self {
+        this.showMatchesPosition = matches
     }
 
     /**
@@ -188,9 +170,8 @@ class SearchRequest(
      * @param facetsDistribution Facets for which to retrieve the matching count
      * @return altered SearchRequest
      */
-    fun setFacetsDistribution(facetsDistribution: Array<String?>?): SearchRequest {
+    fun facetsDistribution(facetsDistribution: Array<String>?) = self {
         this.facetsDistribution = facetsDistribution
-        return this
     }
 
     /**
@@ -199,9 +180,8 @@ class SearchRequest(
      * @param sort Sort queries by an attribute value
      * @return altered SearchRequest
      */
-    fun setSort(sort: Array<String?>?): SearchRequest {
+    fun sort(sort: Array<String>?) = self {
         this.sort = sort
-        return this
     }
 
     /**
@@ -210,29 +190,46 @@ class SearchRequest(
      * @return JSON String of the SearchRequest query
      */
     internal fun getQuery(): String {
-        val jsonObject = JSONObject()
-            .put("q", q)
-            .put("offset", offset)
-            .put("limit", limit)
-            .put("attributesToRetrieve", attributesToRetrieve)
-            .put("cropLength", cropLength)
-            .put("cropMarker", cropMarker)
-            .put("highlightPreTag", highlightPreTag)
-            .put("highlightPostTag", highlightPostTag)
-            .put("showMatchesPosition", matches)
-            .put("facetsDistribution", facetsDistribution)
-            .put("sort", sort)
-        if (attributesToCrop != null) {
-            jsonObject.put("attributesToCrop", attributesToCrop)
-        }
-        if (attributesToHighlight != null) {
-            jsonObject.put("attributesToHighlight", attributesToHighlight)
-        }
-        if (filter != null) {
-            jsonObject.put("filter", filter)
-        }
-        if (filterArray != null) {
-            jsonObject.put("filter", filterArray)
+        val jsonObject = JSONObject().apply {
+            put("q", q)
+
+            offset?.let { put("offset", it) }
+            limit?.let { put("limit", it) }
+
+            if (!attributesToRetrieve.isNullOrEmpty()) {
+                put("attributesToRetrieve", attributesToRetrieve)
+            }
+
+            cropLength?.let { put("cropLength", it) }
+            cropLength?.let { put("cropMarker", it) }
+            showMatchesPosition?.let { put("showMatchesPosition", it) }
+
+            if (!facetsDistribution.isNullOrEmpty()) {
+                put("facetsDistribution", facetsDistribution)
+            }
+
+            if (!sort.isNullOrEmpty()) {
+                put("sort", sort)
+            }
+
+            highlightPreTag?.let { put("highlightPreTag", it) }
+            highlightPostTag?.let { put("highlightPostTag", it) }
+
+            if (!attributesToCrop.isNullOrEmpty()) {
+                put("attributesToCrop", attributesToCrop)
+            }
+
+            if (!attributesToHighlight.isNullOrEmpty()) {
+                put("attributesToHighlight", attributesToHighlight)
+            }
+
+            if (!filter.isNullOrEmpty()) {
+                put("filter", filter)
+            }
+
+            if (!filterArray.isNullOrEmpty()) {
+                put("filter", filterArray)
+            }
         }
         return jsonObject.toString()
     }

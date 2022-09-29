@@ -255,12 +255,12 @@ class Index internal constructor(
     /**
      * Searches documents in index
      *
-     * @param q Query string
+     * @param query Query string
      * @return Meilisearch API response
      * @throws Exception if an error occurs
      */
-    fun search(q: String): SearchResult? {
-        return search.search(uid, q)
+    fun search(query: String): SearchResult {
+        return search.search(uid, query)
     }
 
     /**
