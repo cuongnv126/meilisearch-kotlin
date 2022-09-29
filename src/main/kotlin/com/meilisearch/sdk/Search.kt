@@ -1,11 +1,10 @@
 package com.meilisearch.sdk
 
-import com.meilisearch.sdk.json.GsonJsonHandler
 import com.meilisearch.sdk.model.SearchResult
 
 class Search(config: Config) {
     private val request = MeiliSearchHttpRequest(config)
-    private val jsonHandler = GsonJsonHandler()
+    private val jsonHandler = config.jsonHandlerFactory.newJsonHandler()
 
     /**
      * Performs a search on a given index with a given query

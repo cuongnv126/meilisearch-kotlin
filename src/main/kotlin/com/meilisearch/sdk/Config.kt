@@ -10,10 +10,10 @@ import com.meilisearch.sdk.factory.JsonHandlerFactory
  * @param apiKey API key to pass to the header of requests sent to Meilisearch
  */
 class Config @JvmOverloads constructor(
-    val hostUrl: String,
-    val apiKey: String = ""
+    internal val hostUrl: String,
+    internal val apiKey: String = ""
 ) {
-    val bearerApiKey: String = "Bearer $apiKey"
+    internal val bearerApiKey: String = "Bearer $apiKey"
 
     internal var jsonHandlerFactory: JsonHandlerFactory = JsonHandlerFactory.Default
         private set

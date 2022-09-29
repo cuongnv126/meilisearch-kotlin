@@ -2,38 +2,13 @@ package com.meilisearch.sdk
 
 import com.meilisearch.sdk.exceptions.ApiError
 import com.meilisearch.sdk.exceptions.MeiliSearchApiException
-import com.meilisearch.sdk.http.AbstractHttpClient
 import com.meilisearch.sdk.http.factory.BasicRequestFactory
-import com.meilisearch.sdk.http.factory.RequestFactory
 import com.meilisearch.sdk.http.request.HttpMethod
-import com.meilisearch.sdk.json.GsonJsonHandler
 
-class MeiliSearchHttpRequest {
-    private val jsonHandler = GsonJsonHandler()
-
-    private val client: AbstractHttpClient
-    private val requestFactory: RequestFactory
-
-    /**
-     * Constructor for the MeiliSearchHttpRequest
-     *
-     * @param config Meilisearch configuration
-     */
-    constructor(config: Config) {
-        requestFactory = BasicRequestFactory(config, jsonHandler)
-        client = config.httpClientFactory.newHttpClient()
-    }
-
-    /**
-     * Constructor for the MeiliSearchHttpRequest
-     *
-     * @param client HttpClient for making calls to server
-     * @param factory RequestFactory for generating calls to server
-     */
-    constructor(client: AbstractHttpClient, factory: RequestFactory) {
-        this.client = client
-        this.requestFactory = factory
-    }
+internal class MeiliSearchHttpRequest(config: Config) {
+    private val jsonHandler = config.jsonHandlerFactory.newJsonHandler()
+    private val client = config.httpClientFactory.newHttpClient()
+    private val requestFactory = BasicRequestFactory(config, jsonHandler)
 
     /**
      * Gets a document at the specified path
@@ -58,12 +33,7 @@ class MeiliSearchHttpRequest {
      */
     fun get(api: String, param: String): String {
         val httpResponse = client.get(
-            requestFactory.create(
-                HttpMethod.GET,
-                api + param,
-                emptyMap(),
-                null
-            )
+            requestFactory.create(HttpMethod.GET, api + param, null, null)
         )
         if (httpResponse.statusCode >= 400) {
             throw MeiliSearchApiException(
@@ -83,13 +53,9 @@ class MeiliSearchHttpRequest {
      * @throws MeiliSearchApiException if the response is an error
      */
     fun post(api: String, body: String?): String {
-        val httpResponse = client.post(
-            requestFactory.create(HttpMethod.POST, api, emptyMap(), body)
-        )
+        val httpResponse = client.post(requestFactory.create(HttpMethod.POST, api, null, body))
         if (httpResponse.statusCode >= 400) {
-            throw MeiliSearchApiException(
-                jsonHandler.decode(httpResponse.content, ApiError::class.java)
-            )
+            throw MeiliSearchApiException(jsonHandler.decode(httpResponse.content, ApiError::class.java))
         }
         return String(httpResponse.contentAsBytes)
     }
@@ -104,11 +70,9 @@ class MeiliSearchHttpRequest {
      * @throws MeiliSearchApiException if the response is an error
      */
     fun put(api: String, body: String?): String {
-        val httpResponse = client.put(requestFactory.create(HttpMethod.PUT, api, emptyMap(), body))
+        val httpResponse = client.put(requestFactory.create(HttpMethod.PUT, api, null, body))
         if (httpResponse.statusCode >= 400) {
-            throw MeiliSearchApiException(
-                jsonHandler.decode(httpResponse.content, ApiError::class.java)
-            )
+            throw MeiliSearchApiException(jsonHandler.decode(httpResponse.content, ApiError::class.java))
         }
         return String(httpResponse.contentAsBytes)
     }
@@ -122,13 +86,9 @@ class MeiliSearchHttpRequest {
      * @throws MeiliSearchApiException if the response is an error
      */
     fun delete(api: String): String {
-        val httpResponse = client.put(
-            requestFactory.create<Any?>(HttpMethod.DELETE, api, emptyMap(), null)
-        )
+        val httpResponse = client.put(requestFactory.create(HttpMethod.DELETE, api, null, null))
         if (httpResponse.statusCode >= 400) {
-            throw MeiliSearchApiException(
-                jsonHandler.decode(httpResponse.content, ApiError::class.java)
-            )
+            throw MeiliSearchApiException(jsonHandler.decode(httpResponse.content, ApiError::class.java))
         }
         return String(httpResponse.contentAsBytes)
     }

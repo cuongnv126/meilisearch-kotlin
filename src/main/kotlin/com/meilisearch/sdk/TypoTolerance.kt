@@ -2,12 +2,12 @@ package com.meilisearch.sdk
 
 import org.json.JSONObject
 
-class TypoTolerance {
-    private val enabled = true
-    private val minWordSizeForTypos: HashMap<String?, Int?>? = null
-    private val disableOnWords: Array<String> = arrayOf()
-    private val disableOnAttributes: Array<String> = arrayOf()
-
+class TypoTolerance(
+    val enabled: Boolean = true,
+    val minWordSizeForTypos: HashMap<String?, Int?>? = null,
+    val disableOnWords: Array<String>? = null,
+    val disableOnAttributes: Array<String>? = null
+) {
     /**
      * Method to return the JSONObject of the TypoTolerance Setting
      *

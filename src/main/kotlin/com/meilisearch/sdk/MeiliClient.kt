@@ -6,20 +6,17 @@ package com.meilisearch.sdk
 import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm
 import com.meilisearch.sdk.exceptions.MeiliSearchException
-import com.meilisearch.sdk.json.GsonJsonHandler
 import java.util.Date
 import java.util.TimeZone
 
-class Client(
+class MeiliClient(
     val config: Config
 ) {
     private val indexesHandler: IndexesHandler = IndexesHandler(config)
     private val tasksHandler: TasksHandler = TasksHandler(config)
     private val keysHandler: KeysHandler = KeysHandler(config)
     private val dumpHandler: DumpHandler = DumpHandler(config)
-
-    //    private val gson = SharedObject.gson
-    private val jsonHandler = GsonJsonHandler()
+    private val jsonHandler = config.jsonHandlerFactory.newJsonHandler()
 
     /**
      * Creates index Refer https://docs.meilisearch.com/reference/api/indexes.html#create-an-index

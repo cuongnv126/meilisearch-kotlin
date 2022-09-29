@@ -1,24 +1,23 @@
 package com.meilisearch.sdk
 
-import com.meilisearch.sdk.json.GsonJsonHandler
+import com.meilisearch.sdk.json.JsonHandler
 import com.meilisearch.sdk.model.SearchResult
 import java.io.Serializable
 import org.json.JSONArray
 
-class Index(
+class Index internal constructor(
     val uid: String,
     val createdAt: String? = null,
     val updatedAt: String? = null
 ) : Serializable {
     var primaryKey: String? = null
 
-    private val jsonHandler = GsonJsonHandler()
-
     private lateinit var config: Config
     private lateinit var documents: Documents
     private lateinit var tasksHandler: TasksHandler
     private lateinit var search: Search
     private lateinit var settingsHandler: SettingsHandler
+    private lateinit var jsonHandler: JsonHandler
 
     /**
      * Sets the Meilisearch configuration for the index
@@ -31,6 +30,7 @@ class Index(
         tasksHandler = TasksHandler(config)
         search = Search(config)
         settingsHandler = SettingsHandler(config)
+        jsonHandler = config.jsonHandlerFactory.newJsonHandler()
     }
 
     /**

@@ -4,7 +4,7 @@ import java.io.Serializable
 
 /**
  * Result of `search` API Refer https://docs.meilisearch.com/references/search.html
- * */
+ */
 class SearchResult(
     val hits: ArrayList<HashMap<String, Any>>? = null,
     val offset: Int = 0,

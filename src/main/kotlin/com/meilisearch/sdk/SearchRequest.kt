@@ -209,7 +209,7 @@ class SearchRequest(
      *
      * @return JSON String of the SearchRequest query
      */
-    fun getQuery(): String {
+    internal fun getQuery(): String {
         val jsonObject = JSONObject()
             .put("q", q)
             .put("offset", offset)

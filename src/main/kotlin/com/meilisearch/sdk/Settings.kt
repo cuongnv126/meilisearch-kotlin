@@ -9,7 +9,7 @@ import org.json.JSONObject
  * Refer https://docs.meilisearch.com/reference/api/settings.html
  */
 class Settings(
-    private val synonyms: HashMap<String, Array<String>>? = null,
+    val synonyms: HashMap<String, Array<String>>? = null,
     val stopWords: Array<String>?,
     val rankingRules: Array<String>?,
     val filterableAttributes: Array<String>?,
@@ -25,7 +25,7 @@ class Settings(
      *
      * @return JSON String of the update settings query
      */
-    fun getUpdateQuery(): String {
+    internal fun getUpdateQuery(): String {
         val jsonObject = JSONObject()
         if (this.synonyms != null) {
             jsonObject.put("synonyms", this.synonyms)
