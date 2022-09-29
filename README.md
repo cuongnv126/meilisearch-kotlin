@@ -90,36 +90,32 @@ NB: you can also download Meilisearch from **Homebrew** or **APT** or even run i
 
 #### Add documents <!-- omit in toc -->
 
-```java
-package com.meilisearch.sdk;
+```kotlin
+object TestMeilisearch {
 
-import org.json.JSONArray;
-import org.json.JSONObject;
+  @JvmStatic
+  fun main(args: Array<String>) {
+    val array = JSONArray()
+    val items = object : ArrayList<JSONObject>() {
+      init {
+        add(JSONObject().put("id", "1").put("title", "Carol").put("genres", JSONArray("[\"Romance\",\"Drama\"]")))
+        add(JSONObject().put("id", "2").put("title", "Wonder Woman").put("genres", JSONArray("[\"Action\",\"Adventure\"]")))
+        add(JSONObject().put("id", "3").put("title", "Life of Pi").put("genres", JSONArray("[\"Adventure\",\"Drama\"]")))
+        add(JSONObject().put("id", "4").put("title", "Mad Max: Fury Road").put("genres", JSONArray("[\"Adventure\",\"Science Fiction\"]")))
+        add(JSONObject().put("id", "5").put("title", "Moana").put("genres", JSONArray("[\"Fantasy\",\"Action\"]")))
+        add(JSONObject().put("id", "6").put("title", "Philadelphia").put("genres", JSONArray("[\"Drama\"]")))
+      }
+    }
+    array.put(items)
 
-import java.util.ArrayList;
-
-class TestMeilisearch {
-  public static void main(String[] args) throws Exception {
-
-    JSONArray array = new JSONArray();
-    ArrayList items = new ArrayList() {{
-      add(new JSONObject().put("id", "1").put("title", "Carol").put("genres", new JSONArray("[\"Romance\",\"Drama\"]")));
-      add(new JSONObject().put("id", "2").put("title", "Wonder Woman").put("genres", new JSONArray("[\"Action\",\"Adventure\"]")));
-      add(new JSONObject().put("id", "3").put("title", "Life of Pi").put("genres", new JSONArray("[\"Adventure\",\"Drama\"]")));
-      add(new JSONObject().put("id", "4").put("title", "Mad Max: Fury Road").put("genres", new JSONArray("[\"Adventure\",\"Science Fiction\"]")));
-      add(new JSONObject().put("id", "5").put("title", "Moana").put("genres", new JSONArray("[\"Fantasy\",\"Action\"]")));
-      add(new JSONObject().put("id", "6").put("title", "Philadelphia").put("genres", new JSONArray("[\"Drama\"]")));
-    }};
-
-    array.put(items);
-    String documents = array.getJSONArray(0).toString();
-    Client client = new Client(new Config("http://localhost:7700", "masterKey"));
+    val documents = array.getJSONArray(0).toString()
+    val client = MeiliClient(Config("http://localhost:7700", "masterKey"))
 
     // An index is where the documents are stored.
-    Index index = client.index("movies");
+    val index = client.index("movies")
 
     // If the index 'movies' does not exist, Meilisearch creates it when you first add the documents.
-    index.addDocuments(documents); // => { "uid": 0 }
+    index.addDocuments(documents) // => { "uid": 0 }
   }
 }
 ```
@@ -153,17 +149,13 @@ All the supported options are described in
 the [search parameters](https://docs.meilisearch.com/reference/features/search_parameters.html) section of the
 documentation.
 
-```java
-import com.meilisearch.sdk.SearchRequest;
-
-// ...
-
-SearchResult results=index.search(
-  new SearchRequest("of")
-  .setMatches(true)
-  .setAttributesToHighlight(new String[]{"title"})
-  );
-  System.out.println(results.getHits());
+```kotlin
+val results = index.search(
+  SearchRequest("max")
+    .setOffset(0)
+    .setLimit(4)
+)
+println(results.hits)
 ```
 
 - Output:
@@ -201,12 +193,13 @@ SearchResult results=index.search(
 
 If you want to enable filtering, you must add your attributes to the `filterableAttributes` index setting.
 
-```java
-index.updateFilterableAttributesSettings(new String[]
-  {
-  "id",
-  "genres"
-  });
+```kotlin
+index.updateFilterableAttributesSettings(
+  arrayOf(
+    "id",
+    "genres"
+  )
+)
 ```
 
 You only need to perform this operation once.
@@ -217,11 +210,11 @@ the [task status](https://docs.meilisearch.com/reference/api/tasks.html#get-task
 
 Then, you can perform the search:
 
-```java
+```kotlin
 index.search(
-  new SearchRequest("wonder")
-  .setFilter(new String[]{"id > 1 AND genres = Action"})
-  );
+  SearchRequest("wonder")
+    .setFilter(arrayOf("id > 1 AND genres = Action"))
+)
 ```
 
 ```json
@@ -248,59 +241,18 @@ index.search(
 
 ### JSON <!-- omit in toc -->
 
-#### Basic JSON <!-- omit in toc -->
+#### Creating a Custom `JsonHandler` <!-- omit in toc -->
 
-The default JSON can be created by calling the default constructor of `JsonbJsonHandler` class which will create a
-config of type `JsonbConfig` and using this config. It will initialize the mapper variable by calling the create method
-of `JsonbBuilder` class.
+To create a custom JSON handler, create an object of JsonHandle in `jsonHandlerFactory` config.<br>
 
-#### Creating a Custom `GsonJsonHandler` <!-- omit in toc -->
-
-To create a custom JSON handler, create an object of GsonJsonHandler and send the GSON object in the parameterized
-constructor.<br>
-
-```java
-Gson gson=new GsonBuilder()
-  .disableHtmlEscaping()
-  .setFieldNamingPolicy(FieldNamingPolicy.UPPER_CAMEL_CASE)
-  .setPrettyPrinting()
-  .serializeNulls()
-  .create();
-private GsonJsonHandler jsonGson=new GsonJsonHandler(gson);
-  jsonGson.encode("your_data");
-```
-
-#### Creating a Custom `JacksonJsonHandler` <!-- omit in toc -->
-
-Another method is to create an object of `JacksonJsonHandler` and set the required parameters. The supported option is
-an object of `ObjectMapper`. It's passed as a parameter to the `JacksonJsonHandler`’s parameterized constructor. This is
-used to initialize the mapper variable.
-
-The mapper variable is responsible for the encoding and decoding of the JSON.
-
-Using the custom JSON:
-
-```java
-Config config=new Config("http://localhost:7700","masterKey");
-  HttpAsyncClient client=HttpAsyncClients.createDefault();
-  ApacheHttpClient client=new ApacheHttpClient(config,client);
-private final JsonHandler jsonHandler=new JacksonJsonHandler(new ObjectMapper());
-private final RequestFactory requestFactory=new BasicRequestFactory(jsonHandler);
-private final GenericServiceTemplate serviceTemplate=new GenericServiceTemplate(client,jsonHandler,requestFactory);
-
-private final ServiceTemplate serviceTemplate;
-  serviceTemplate.getProcessor().encode("your_data");
-```
-
-### Creating a Custom `JsonbJsonHandler <!-- omit in toc -->
-
-Another method of creating a JSON handler is to create an object of `JsonbJsonHandler` and send the `Jsonb` object to
-the parameterized constructor.
-
-```java
-Jsonb jsonb=JsonbBuilder.create();
-private JsonbJsonHandler jsonbHandler=new JsonbJsonHandler(jsonb);
-  jsonbHandler.encode("your_data");
+```kotlin
+val client = MeiliClient(
+  Config("http://127.0.0.1:7700")
+    .jsonHandlerFactory(object : JsonHandlerFactory {
+      private val jacksonJsonHandler = JacksonJsonHandler()
+      override fun newJsonHandler(): JsonHandler = jacksonJsonHandler // singleton
+    })
+)
 ```
 
 ### Custom Client <!-- omit in toc -->
@@ -309,56 +261,15 @@ To create a custom `Client` handler, create an object of `Client` and set the re
 
 A `Config` object should be passed, containing your host URL and your API key.
 
-```java
-Config config=new Config("http://localhost:7700","masterKey");
-  return new Client(config);
-```
-
-The `Client(config)` constructor sets the config instance to the member variable. It also sets the 3 other instances
-namely `gson()`, `IndexesHandler(config)` and `DumpHandler(config)`.
-
-Using the custom `Client`:
-
-```java
-Config config=new Config("http://localhost:7700","masterKey");
-  HttpAsyncClient client=HttpAsyncClients.createDefault();
-  ApacheHttpClient customClient=new ApacheHttpClient(config,client);
-  customClient.index("movies").search("American ninja");
-```
-
-#### Custom Http Request <!-- omit in toc -->
-
-To create a custom HTTP request, create an object of `BasicHttpRequest` and set the required parameters.
-
-The supported options are as follows:
-
-1. HTTP method: a `String` that can be set as following values: `HEAD`, `GET`, `POST`, `PUT`, or `DELETE`.
-2. Path: a `String` corresponding to the endpoint of the API.
-3. Headers: a `Map<String,String>` containing the header parameters in the form of key-value pair.
-4. Content: the `String` of your content.
-
-```java
-return new BasicHttpRequest(
-  method,
-  path,
-  headers,
-  content==null?null:this.jsonHandler.encode(content));
-```
-
-Alternatively, there is an interface `RequestFactory` which has a method `create`.<br>
-In order to call this method, create an object of `RequestFactory` and call the method by passing the required
-parameters.
-
-Using the custom Http Request:
-
-```java
-public interface RequestFactory {
-  <T> HttpRequest<?> create(
-    HttpMethod method, String path, Map<String, String> headers, T content);
-}
-
-  private final RequestFactory requestFactory;
-requestFactory.create(HttpMethod.GET,"/health",Collections.emptyMap(),{"id":"3"});
+```kotlin
+val client = MeiliClient(
+  Config("http://127.0.0.1:7700")
+    .httpClientFactory(object : HttpClientFactory {
+      override fun newHttpClient(): AbstractHttpClient {
+        return OkHttp3Client() // build-in
+      }
+    })
+)
 ```
 
 ## 🤖 Compatibility with Meilisearch
