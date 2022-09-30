@@ -1,15 +1,13 @@
 package com.meilisearch.sdk.http.response
 
-open class BasicHttpResponse(
+import java.nio.charset.StandardCharsets
+
+class BasicHttpResponse(
     override val headers: Map<String, String>,
     override val statusCode: Int,
     override val content: String?
 ) : HttpResponse<String?> {
 
-    override fun hasContent(): Boolean {
-        return content != null
-    }
-
-    override val contentAsBytes: ByteArray
-        get() = content!!.toByteArray()
+    override val contentAsString: String = content.orEmpty()
+    override val contentAsBytes: ByteArray get() = content!!.toByteArray(StandardCharsets.UTF_8)
 }

@@ -23,7 +23,7 @@ internal class IndexesHandler(config: Config) {
      * @throws Exception if an error occurs
      */
     @JvmOverloads
-    fun create(uid: String?, primaryKey: String? = null): String {
+    fun create(uid: String, primaryKey: String? = null): String {
         val params = JsonObject()
         params.addProperty("uid", uid)
         if (primaryKey != null) {

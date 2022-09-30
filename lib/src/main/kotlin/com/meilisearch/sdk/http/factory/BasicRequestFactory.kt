@@ -35,9 +35,9 @@ class BasicRequestFactory(
     }
 
     private fun authHeader(headers: Map<String, String>?): Map<String, String>? {
-        if (config.apiKey.isNotEmpty()) {
+        if (config.masterKey.isNotEmpty()) {
             return (headers ?: emptyMap()) + mapOf(
-                HEADER_AUTH to config.bearerApiKey
+                HEADER_AUTH to config.bearerMasterKey
             )
         }
         return headers

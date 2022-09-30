@@ -179,9 +179,7 @@ class MeiliClient(
      * @param uid Identifier of the requested Task
      * @throws Exception if an error occurs or if timeout is reached
      */
-    fun waitForTask(uid: Int) {
-        tasksHandler.waitForTask(uid)
-    }
+    suspend fun waitForTask(uid: Int) = tasksHandler.waitForTask(uid)
 
     /**
      * Retrieves the key with the specified uid
@@ -243,7 +241,7 @@ class MeiliClient(
         // Validate all fields
         val now = Date()
         val secret: String = if (options.apiKey.isNullOrEmpty()) {
-            config.apiKey
+            config.masterKey
         } else {
             options.apiKey
         }

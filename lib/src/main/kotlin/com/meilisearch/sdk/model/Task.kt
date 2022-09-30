@@ -4,14 +4,14 @@ import com.meilisearch.sdk.shared.SharedObject
 import java.util.Date
 
 class Task(
-    val status: String = "",
-    val uid: Long = 0,
+    val taskUid: Int,
     val indexUid: String = "",
+    val status: String = "",
     val type: String? = null,
     val duration: String = "",
-    val enqueuedAt: Date? = null,
-    val startedAt: Date? = null,
-    val finishedAt: Date? = null,
+    val enqueuedAt: String? = null,
+    val startedAt: String? = null,
+    val finishedAt: String? = null,
     val error: TaskError? = null,
     val details: Details? = null
 ) {

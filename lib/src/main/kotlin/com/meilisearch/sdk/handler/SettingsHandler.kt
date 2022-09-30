@@ -152,7 +152,7 @@ internal class SettingsHandler(config: Config) {
      * @return Task instance
      * @throws Exception if an error occurs
      */
-    fun resetSynonymsSettings(uid: String?): Task {
+    fun resetSynonymsSettings(uid: String): Task {
         return jsonHandler.decode(
             request.delete("/indexes/$uid/settings/synonyms"),
             Task::class.java
@@ -167,7 +167,7 @@ internal class SettingsHandler(config: Config) {
      * @return an array of strings that contains the stop-words
      * @throws Exception if an error occurs
      */
-    fun getStopWordsSettings(uid: String?): Array<String> {
+    fun getStopWordsSettings(uid: String): Array<String> {
         return jsonHandler.decode(
             request.get("/indexes/$uid/settings/stop-words"),
             Array<String>::class.java
@@ -183,7 +183,7 @@ internal class SettingsHandler(config: Config) {
      * @return Task instance
      * @throws Exception if an error occurs
      */
-    fun updateStopWordsSettings(uid: String?, stopWords: Array<String>): Task {
+    fun updateStopWordsSettings(uid: String, stopWords: Array<String>): Task {
         val stopWordsAsJson = jsonHandler.encode(stopWords)
         return jsonHandler.decode(
             request.post(
@@ -201,7 +201,7 @@ internal class SettingsHandler(config: Config) {
      * @return Task instance
      * @throws Exception if an error occurs
      */
-    fun resetStopWordsSettings(uid: String?): Task {
+    fun resetStopWordsSettings(uid: String): Task {
         return jsonHandler.decode(
             request.delete("/indexes/$uid/settings/stop-words"),
             Task::class.java
@@ -216,7 +216,7 @@ internal class SettingsHandler(config: Config) {
      * @return an array of strings that contains the searchable attributes
      * @throws Exception if an error occurs
      */
-    fun getSearchableAttributesSettings(uid: String?): Array<String> {
+    fun getSearchableAttributesSettings(uid: String): Array<String> {
         return jsonHandler.decode(
             request.get("/indexes/$uid/settings/searchable-attributes"),
             Array<String>::class.java
@@ -233,7 +233,7 @@ internal class SettingsHandler(config: Config) {
      * @return Task instance
      * @throws Exception if an error occurs
      */
-    fun updateSearchableAttributesSettings(uid: String?, searchableAttributes: Array<String>): Task {
+    fun updateSearchableAttributesSettings(uid: String, searchableAttributes: Array<String>): Task {
         val searchableAttributesAsJson = jsonHandler.encode(searchableAttributes)
         return jsonHandler.decode(
             request.put(
@@ -252,7 +252,7 @@ internal class SettingsHandler(config: Config) {
      * @return Task instance
      * @throws Exception if an error occurs
      */
-    fun resetSearchableAttributesSettings(uid: String?): Task {
+    fun resetSearchableAttributesSettings(uid: String): Task {
         return jsonHandler.decode(
             request.delete(
                 "/indexes/$uid/settings/searchable-attributes"
@@ -269,7 +269,7 @@ internal class SettingsHandler(config: Config) {
      * @return an array of strings that contains attributes of an index to display
      * @throws Exception if an error occurs
      */
-    fun getDisplayedAttributesSettings(uid: String?): Array<String> {
+    fun getDisplayedAttributesSettings(uid: String): Array<String> {
         return jsonHandler.decode(
             request.get("/indexes/$uid/settings/displayed-attributes"),
             Array<String>::class.java
@@ -286,7 +286,7 @@ internal class SettingsHandler(config: Config) {
      * @return Task instance
      * @throws Exception if an error occurs
      */
-    fun updateDisplayedAttributesSettings(uid: String?, displayAttributes: Array<String>): Task {
+    fun updateDisplayedAttributesSettings(uid: String, displayAttributes: Array<String>): Task {
         val displayAttributesAsJson = jsonHandler.encode(displayAttributes)
         return jsonHandler.decode(
             request.put(
@@ -305,7 +305,7 @@ internal class SettingsHandler(config: Config) {
      * @return Task instance
      * @throws Exception if an error occurs
      */
-    fun resetDisplayedAttributesSettings(uid: String?): Task {
+    fun resetDisplayedAttributesSettings(uid: String): Task {
         return jsonHandler.decode(
             request.delete("/indexes/$uid/settings/displayed-attributes"),
             Task::class.java
@@ -320,7 +320,7 @@ internal class SettingsHandler(config: Config) {
      * @return an array of strings that contains the filterable attributes settings
      * @throws Exception if an error occurs
      */
-    fun getFilterableAttributesSettings(uid: String?): Array<String> {
+    fun getFilterableAttributesSettings(uid: String): Array<String> {
         return jsonHandler.decode(
             request.get("/indexes/$uid/settings/filterable-attributes"),
             Array<String>::class.java
@@ -337,7 +337,7 @@ internal class SettingsHandler(config: Config) {
      * @return Task instance
      * @throws Exception if an error occurs
      */
-    fun updateFilterableAttributesSettings(uid: String?, filterableAttributes: Array<String>): Task {
+    fun updateFilterableAttributesSettings(uid: String, filterableAttributes: Array<String>): Task {
         val filterableAttributesAsJson = jsonHandler.encode(filterableAttributes)
         return jsonHandler.decode(
             request.put(
@@ -356,7 +356,7 @@ internal class SettingsHandler(config: Config) {
      * @return Task instance
      * @throws Exception if an error occurs
      */
-    fun resetFilterableAttributesSettings(uid: String?): Task {
+    fun resetFilterableAttributesSettings(uid: String): Task {
         return jsonHandler.decode(
             request.delete(
                 "/indexes/$uid/settings/filterable-attributes"
@@ -389,7 +389,7 @@ internal class SettingsHandler(config: Config) {
      * @return Task instance
      * @throws Exception if an error occurs
      */
-    fun updateDistinctAttributeSettings(uid: String?, distinctAttribute: String?): Task {
+    fun updateDistinctAttributeSettings(uid: String, distinctAttribute: String?): Task {
         val distinctAttributeAsJson = jsonHandler.encode(distinctAttribute)
         return jsonHandler.decode(
             request.put(
@@ -439,7 +439,7 @@ internal class SettingsHandler(config: Config) {
      * @return Task instance
      * @throws Exception if an error occurs
      */
-    fun updateTypoToleranceSettings(uid: String?, typoTolerance: TypoTolerance?): Task {
+    fun updateTypoToleranceSettings(uid: String, typoTolerance: TypoTolerance?): Task {
         val typoToleranceAsJson = jsonHandler.encode(typoTolerance)
         return jsonHandler.decode(
             request.post(
@@ -457,7 +457,7 @@ internal class SettingsHandler(config: Config) {
      * @return Task instance
      * @throws Exception if an error occurs
      */
-    fun resetTypoToleranceSettings(uid: String?): Task {
+    fun resetTypoToleranceSettings(uid: String): Task {
         return jsonHandler.decode(
             request.delete("/indexes/$uid/settings/typo-tolerance"),
             Task::class.java

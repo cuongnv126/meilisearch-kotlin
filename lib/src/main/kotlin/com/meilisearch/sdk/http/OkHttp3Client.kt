@@ -1,5 +1,6 @@
 package com.meilisearch.sdk.http
 
+import com.meilisearch.sdk.coroutine.await
 import com.meilisearch.sdk.http.request.HttpMethod
 import com.meilisearch.sdk.http.request.HttpRequest
 import com.meilisearch.sdk.http.response.BasicHttpResponse
@@ -16,75 +17,69 @@ class OkHttp3Client(
     private val client: OkHttpClient = OkHttpClient()
 ) : AbstractHttpClient() {
 
-    private fun getBodyFromRequest(request: HttpRequest<*>): RequestBody {
-        return if (request.hasContent()) request.contentAsBytes.toRequestBody(JSON) else EMPTY_REQUEST_BODY
+    private fun HttpRequest<*>.toRequestBody(): RequestBody {
+        return if (this.hasContent()) this.contentAsBytes.toRequestBody(JSON) else EMPTY_REQUEST_BODY
     }
 
-    private fun buildRequest(request: HttpRequest<*>): Request {
+    private fun HttpRequest<*>.toRequest(): Request {
         val builder = Request.Builder()
-            .url(request.path)
+            .url(this.path)
 
-        request.headers?.forEach { (key, value) ->
+        this.headers?.forEach { (key, value) ->
             builder.addHeader(key, value)
         }
 
-        when (request.method) {
+        when (this.method) {
             HttpMethod.GET -> builder.get()
-            HttpMethod.POST -> builder.post(getBodyFromRequest(request))
-            HttpMethod.PUT -> builder.put(getBodyFromRequest(request))
-            HttpMethod.DELETE -> if (request.hasContent()) builder.delete(getBodyFromRequest(request)) else builder.delete()
-            HttpMethod.PATCH -> builder.patch(getBodyFromRequest(request))
-            else -> throw IllegalStateException("Unexpected value: " + request.method)
+            HttpMethod.POST -> builder.post(toRequestBody())
+            HttpMethod.PUT -> builder.put(toRequestBody())
+            HttpMethod.DELETE -> if (hasContent()) builder.delete(toRequestBody()) else builder.delete()
+            HttpMethod.PATCH -> builder.patch(toRequestBody())
+            else -> throw IllegalStateException("Unexpected value: $method")
         }
 
         return builder.build()
     }
 
-    private fun buildResponse(response: Response): HttpResponse<*> {
-        var body: String? = null
-        val responseBody = response.body
-        if (responseBody != null) body = responseBody.string()
+    private fun parseResponse(response: Response): HttpResponse<*> {
         return BasicHttpResponse(
-            parseHeaders(response.headers.toMultimap()), response.code, body
+            parseHeaders(response.headers.toMultimap()),
+            response.code,
+            response.body?.string()
         )
     }
 
     private fun parseHeaders(headers: Map<String, List<String>>): Map<String, String> {
         val headerMap = HashMap<String, String>()
         for ((key, value) in headers) {
-            headerMap[key] = java.lang.String.join("; ", value)
+            headerMap[key] = value.joinToString("; ")
         }
         return headerMap
     }
 
-    override fun get(request: HttpRequest<*>): HttpResponse<*> {
-        val okRequest = buildRequest(request)
-        val execute = client.newCall(okRequest).execute()
-        return buildResponse(execute)
+    override suspend fun get(request: HttpRequest<*>): HttpResponse<*> {
+        val execute = client.newCall(request.toRequest()).await()
+        return parseResponse(execute)
     }
 
-    override fun post(request: HttpRequest<*>): HttpResponse<*> {
-        val okRequest = buildRequest(request)
-        val execute = client.newCall(okRequest).execute()
-        return buildResponse(execute)
+    override suspend fun post(request: HttpRequest<*>): HttpResponse<*> {
+        val execute = client.newCall(request.toRequest()).await()
+        return parseResponse(execute)
     }
 
-    override fun put(request: HttpRequest<*>): HttpResponse<*> {
-        val okRequest = buildRequest(request)
-        val execute = client.newCall(okRequest).execute()
-        return buildResponse(execute)
+    override suspend fun put(request: HttpRequest<*>): HttpResponse<*> {
+        val execute = client.newCall(request.toRequest()).await()
+        return parseResponse(execute)
     }
 
-    override fun delete(request: HttpRequest<*>): HttpResponse<*> {
-        val okRequest = buildRequest(request)
-        val execute = client.newCall(okRequest).execute()
-        return buildResponse(execute)
+    override suspend fun delete(request: HttpRequest<*>): HttpResponse<*> {
+        val execute = client.newCall(request.toRequest()).await()
+        return parseResponse(execute)
     }
 
-    override fun patch(request: HttpRequest<*>): HttpResponse<*> {
-        val okRequest = buildRequest(request)
-        val execute = client.newCall(okRequest).execute()
-        return buildResponse(execute)
+    override suspend fun patch(request: HttpRequest<*>): HttpResponse<*> {
+        val execute = client.newCall(request.toRequest()).await()
+        return parseResponse(execute)
     }
 
     companion object {

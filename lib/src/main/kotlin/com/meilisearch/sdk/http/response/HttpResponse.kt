@@ -5,6 +5,6 @@ interface HttpResponse<B> {
     val statusCode: Int
     val content: B
 
-    fun hasContent(): Boolean
+    val contentAsString: String
     val contentAsBytes: ByteArray
 }

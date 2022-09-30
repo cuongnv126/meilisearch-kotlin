@@ -600,9 +600,7 @@ class Index internal constructor(
      * @param taskId Identifier of the requested Task
      * @throws Exception if an error occurs or if timeout is reached
      */
-    fun waitForTask(taskId: Int) {
-        tasksHandler.waitForTask(taskId, 5000, 50)
-    }
+    suspend fun waitForTask(taskId: Int) = tasksHandler.waitForTask(taskId)
 
     /**
      * Waits for a task to be processed
@@ -612,9 +610,8 @@ class Index internal constructor(
      * @param intervalInMs number of milliseconds before requesting the status again
      * @throws Exception if an error occurs or if timeout is reached
      */
-    fun waitForTask(taskId: Int, timeoutInMs: Int, intervalInMs: Int) {
+    suspend fun waitForTask(taskId: Int, timeoutInMs: Long, intervalInMs: Long) =
         tasksHandler.waitForTask(taskId, timeoutInMs, intervalInMs)
-    }
 
     /**
      * Fetches the primary key of the index in the Meilisearch instance

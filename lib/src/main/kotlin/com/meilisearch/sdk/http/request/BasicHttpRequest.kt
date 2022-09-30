@@ -13,6 +13,5 @@ class BasicHttpRequest(
         return content != null
     }
 
-    override val contentAsBytes: ByteArray
-        get() = content!!.toByteArray(StandardCharsets.UTF_8)
+    override val contentAsBytes: ByteArray get() = content!!.toByteArray(StandardCharsets.UTF_8)
 }

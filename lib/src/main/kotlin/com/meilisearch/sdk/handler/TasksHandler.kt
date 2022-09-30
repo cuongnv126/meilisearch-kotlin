@@ -4,7 +4,8 @@ import com.meilisearch.sdk.Config
 import com.meilisearch.sdk.http.MeiliSearchHttpRequest
 import com.meilisearch.sdk.model.Result
 import com.meilisearch.sdk.model.Task
-import java.util.Date
+import java.util.concurrent.TimeoutException
+import kotlinx.coroutines.delay
 
 /**
  * Wrapper around MeilisearchHttpRequest class to use for MeiliSearch tasks
@@ -24,7 +25,7 @@ internal class TasksHandler(config: Config) {
      * @return Task instance
      * @throws Exception if client request causes an error
      */
-    fun getTask(indexUid: String?, taskUid: Int): Task {
+    fun getTask(indexUid: String, taskUid: Int): Task {
         val urlPath = "/indexes/$indexUid/tasks/$taskUid"
         return jsonHandler.decode(request.get(urlPath), Task::class.java)
     }
@@ -36,7 +37,7 @@ internal class TasksHandler(config: Config) {
      * @return List of task instance
      * @throws Exception if client request causes an error
      */
-    fun getTasks(indexUid: String?): Array<Task> {
+    fun getTasks(indexUid: String): Array<Task> {
         val urlPath = "/indexes/$indexUid/tasks"
         return jsonHandler.decode(request.get(urlPath), Array<Task>::class.java)
     }
@@ -84,20 +85,26 @@ internal class TasksHandler(config: Config) {
      * @throws Exception if timeout is reached
      */
     @JvmOverloads
-    fun waitForTask(taskUid: Int, timeoutInMs: Int = 5000, intervalInMs: Int = 50) {
+    suspend fun waitForTask(taskUid: Int, timeoutInMs: Long = 5000L, intervalInMs: Long = 50L): Task {
         var task: Task
-        var status = ""
-        val startTime = Date().time
+        var status: String
+
+        val startTime = System.currentTimeMillis()
         var elapsedTime: Long = 0
-        while (status != SUCCEEDED && status != FAILED) {
+        do {
             if (elapsedTime >= timeoutInMs) {
-                throw Exception()
+                throw TimeoutException()
             }
-            task = this.getTask(taskUid)
+
+            task = getTask(taskUid)
             status = task.status
-            Thread.sleep(intervalInMs.toLong())
-            elapsedTime = Date().time - startTime
-        }
+            if (status == SUCCEEDED || status == FAILED) break
+
+            delay(intervalInMs)
+            elapsedTime = System.currentTimeMillis() - startTime
+        } while (true)
+
+        return task
     }
 
     companion object {

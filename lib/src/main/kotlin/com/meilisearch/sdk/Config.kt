@@ -1,33 +1,55 @@
 package com.meilisearch.sdk
 
+import com.meilisearch.sdk.extension.BuilderExtension.self
 import com.meilisearch.sdk.factory.HttpClientFactory
 import com.meilisearch.sdk.factory.JsonHandlerFactory
+import java.util.concurrent.Executors
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.asCoroutineDispatcher
 
 /**
  * Creates a configuration with an API key
  *
  * @param hostUrl URL of the Meilisearch instance
- * @param apiKey API key to pass to the header of requests sent to Meilisearch
+ * @param masterKey API key to pass to the header of requests sent to Meilisearch
  */
-class Config @JvmOverloads constructor(
+class Config private constructor(
     internal val hostUrl: String,
-    internal val apiKey: String = ""
+    internal val masterKey: String,
+    internal val dispatcher: CoroutineDispatcher,
+    internal val jsonHandlerFactory: JsonHandlerFactory,
+    internal val httpClientFactory: HttpClientFactory
 ) {
-    internal val bearerApiKey: String = "Bearer $apiKey"
+    internal val bearerMasterKey: String = "Bearer $masterKey"
 
-    internal var jsonHandlerFactory: JsonHandlerFactory = JsonHandlerFactory.Default
-        private set
+    class Builder(
+        private val hostUrl: String = "",
+        private val masterKey: String = ""
+    ) {
+        private var dispatcher: CoroutineDispatcher? = null
+        private var jsonHandlerFactory: JsonHandlerFactory? = null
+        private var httpClientFactory: HttpClientFactory? = null
 
-    internal var httpClientFactory: HttpClientFactory = HttpClientFactory.Default
-        private set
+        fun dispatcher(dispatcher: CoroutineDispatcher) = self {
+            this.dispatcher = dispatcher
+        }
 
-    fun jsonHandlerFactory(jsonHandlerFactory: JsonHandlerFactory): Config {
-        this.jsonHandlerFactory = jsonHandlerFactory
-        return this
-    }
+        fun jsonHandlerFactory(jsonHandlerFactory: JsonHandlerFactory) = self {
+            this.jsonHandlerFactory = jsonHandlerFactory
+        }
 
-    fun httpClientFactory(httpClientFactory: HttpClientFactory): Config {
-        this.httpClientFactory = httpClientFactory
-        return this
+        fun httpClientFactory(httpClientFactory: HttpClientFactory) = self {
+            this.httpClientFactory = httpClientFactory
+        }
+
+        fun build(): Config {
+            return Config(
+                hostUrl = hostUrl,
+                masterKey = masterKey,
+                dispatcher = dispatcher ?: Executors.newScheduledThreadPool(2).asCoroutineDispatcher(),
+                jsonHandlerFactory = jsonHandlerFactory ?: JsonHandlerFactory.Default,
+                httpClientFactory = httpClientFactory ?: HttpClientFactory.Default
+            )
+        }
     }
 }
