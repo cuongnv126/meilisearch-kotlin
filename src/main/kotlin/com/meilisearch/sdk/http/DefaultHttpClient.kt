@@ -73,4 +73,8 @@ class DefaultHttpClient : AbstractHttpClient() {
     override fun delete(request: HttpRequest<*>): HttpResponse<*> {
         return execute(request)
     }
+
+    override fun patch(request: HttpRequest<*>): HttpResponse<*> {
+        return execute(request)
+    }
 }

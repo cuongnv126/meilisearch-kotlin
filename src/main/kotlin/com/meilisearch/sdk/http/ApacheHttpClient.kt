@@ -68,6 +68,10 @@ class ApacheHttpClient : AbstractHttpClient {
         return execute(request)
     }
 
+    override fun patch(request: HttpRequest<*>): HttpResponse<*> {
+        return execute(request)
+    }
+
     private fun mapRequest(request: HttpRequest<*>): SimpleHttpRequest {
         val httpRequest = SimpleHttpRequest(request.method.name, request.path)
 

@@ -33,6 +33,7 @@ class OkHttp3Client(
             HttpMethod.POST -> builder.post(getBodyFromRequest(request))
             HttpMethod.PUT -> builder.put(getBodyFromRequest(request))
             HttpMethod.DELETE -> if (request.hasContent()) builder.delete(getBodyFromRequest(request)) else builder.delete()
+            HttpMethod.PATCH -> builder.patch(getBodyFromRequest(request))
             else -> throw IllegalStateException("Unexpected value: " + request.method)
         }
 
@@ -75,6 +76,12 @@ class OkHttp3Client(
     }
 
     override fun delete(request: HttpRequest<*>): HttpResponse<*> {
+        val okRequest = buildRequest(request)
+        val execute = client.newCall(okRequest).execute()
+        return buildResponse(execute)
+    }
+
+    override fun patch(request: HttpRequest<*>): HttpResponse<*> {
         val okRequest = buildRequest(request)
         val execute = client.newCall(okRequest).execute()
         return buildResponse(execute)

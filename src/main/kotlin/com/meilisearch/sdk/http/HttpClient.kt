@@ -8,4 +8,5 @@ interface HttpClient<T : HttpRequest<*>, R : HttpResponse<*>> {
     fun post(request: T): R
     fun put(request: T): R
     fun delete(request: T): R
+    fun patch(request: T): R
 }

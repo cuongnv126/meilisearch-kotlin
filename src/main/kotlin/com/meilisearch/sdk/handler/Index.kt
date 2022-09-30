@@ -331,7 +331,7 @@ class Index internal constructor(
      * @return Task instance
      * @throws Exception if an error occurs
      */
-    fun updateRankingRuleSettings(rankingRules: Array<String?>): Task {
+    fun updateRankingRuleSettings(rankingRules: Array<String>): Task {
         return settingsHandler.updateRankingRuleSettings(uid, rankingRules)
     }
 
@@ -363,7 +363,7 @@ class Index internal constructor(
      * @return Task instance
      * @throws Exception if an error occurs
      */
-    fun updateSynonymsSettings(synonyms: Map<String?, Array<String?>?>): Task {
+    fun updateSynonymsSettings(synonyms: Map<String?, Array<String>?>): Task {
         return settingsHandler.updateSynonymsSettings(uid, synonyms)
     }
 
@@ -395,7 +395,7 @@ class Index internal constructor(
      * @return Task instance
      * @throws Exception if an error occurs
      */
-    fun updateStopWordsSettings(stopWords: Array<String?>): Task {
+    fun updateStopWordsSettings(stopWords: Array<String>): Task {
         return settingsHandler.updateStopWordsSettings(uid, stopWords)
     }
 
@@ -427,7 +427,7 @@ class Index internal constructor(
      * @return Task instance
      * @throws Exception if an error occurs
      */
-    fun updateSearchableAttributesSettings(searchableAttributes: Array<String?>): Task {
+    fun updateSearchableAttributesSettings(searchableAttributes: Array<String>): Task {
         return settingsHandler.updateSearchableAttributesSettings(
             uid, searchableAttributes
         )
@@ -461,7 +461,7 @@ class Index internal constructor(
      * @return Task instance
      * @throws Exception if an error occurs
      */
-    fun updateDisplayedAttributesSettings(displayAttributes: Array<String?>): Task {
+    fun updateDisplayedAttributesSettings(displayAttributes: Array<String>): Task {
         return settingsHandler.updateDisplayedAttributesSettings(uid, displayAttributes)
     }
 
@@ -494,7 +494,7 @@ class Index internal constructor(
      * @return Task instance
      * @throws Exception if an error occurs
      */
-    fun updateFilterableAttributesSettings(filterableAttributes: Array<String?>): Task {
+    fun updateFilterableAttributesSettings(filterableAttributes: Array<String>): Task {
         return settingsHandler.updateFilterableAttributesSettings(
             uid, filterableAttributes
         )
