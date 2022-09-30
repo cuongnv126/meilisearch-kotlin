@@ -1,6 +1,7 @@
 package com.meilisearch.sdk.handler
 
 import com.meilisearch.sdk.Config
+import com.meilisearch.sdk.coroutine.waitOn
 import com.meilisearch.sdk.http.MeiliSearchHttpRequest
 import com.meilisearch.sdk.json.decode
 import com.meilisearch.sdk.model.Result
@@ -16,6 +17,7 @@ import kotlinx.coroutines.delay
  */
 internal class TasksHandler(config: Config) {
     private val request = MeiliSearchHttpRequest(config)
+    private val dispatcher = config.dispatcher
     private val jsonHandler = config.jsonHandlerFactory.newJsonHandler()
 
     /**
@@ -81,7 +83,7 @@ internal class TasksHandler(config: Config) {
      * @throws Exception if timeout is reached
      */
     @JvmOverloads
-    suspend fun waitForTask(taskUid: Int, timeoutInMs: Long = 5000L, intervalInMs: Long = 50L): Task {
+    fun waitForTask(taskUid: Int, timeoutInMs: Long = 5000L, intervalInMs: Long = 50L): Task = waitOn(dispatcher) {
         var task: Task
         var status: String
 
@@ -100,7 +102,7 @@ internal class TasksHandler(config: Config) {
             elapsedTime = System.currentTimeMillis() - startTime
         } while (true)
 
-        return task
+        return@waitOn task
     }
 
     companion object {

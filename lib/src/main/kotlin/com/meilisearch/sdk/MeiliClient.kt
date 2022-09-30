@@ -177,7 +177,7 @@ class MeiliClient(
      * @param uid Identifier of the requested Task
      * @throws Exception if an error occurs or if timeout is reached
      */
-    suspend fun waitForTask(uid: Int) = tasksHandler.waitForTask(uid)
+    fun waitForTask(uid: Int) = tasksHandler.waitForTask(uid)
 
     /**
      * Retrieves the key with the specified uid
