@@ -1,7 +1,7 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    kotlin("jvm") version "1.7.20"
+    kotlin("jvm")
 }
 
 group = "org.cuongnv.meilisearch"
@@ -23,10 +23,4 @@ dependencies {
     compileOnly("jakarta.json.bind:jakarta.json.bind-api:2.0.0")
 
     implementation("com.auth0:java-jwt:3.19.2")
-
-    implementation(project(":lib"))
-}
-
-tasks.withType<KotlinCompile> {
-    kotlinOptions.jvmTarget = "1.8"
 }
