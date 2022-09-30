@@ -11,6 +11,7 @@ import com.meilisearch.sdk.handler.IndexesHandler
 import com.meilisearch.sdk.handler.KeysHandler
 import com.meilisearch.sdk.handler.TasksHandler
 import com.meilisearch.sdk.exceptions.MeiliSearchException
+import com.meilisearch.sdk.json.decode
 import com.meilisearch.sdk.model.Dump
 import com.meilisearch.sdk.model.Key
 import com.meilisearch.sdk.model.Task
@@ -36,7 +37,7 @@ class MeiliClient(
      */
     @JvmOverloads
     fun createIndex(uid: String, primaryKey: String? = null): Task {
-        return jsonHandler.decode(indexesHandler.create(uid, primaryKey), Task::class.java)
+        return jsonHandler.decode(indexesHandler.create(uid, primaryKey))
     }
 
     /**
@@ -47,10 +48,7 @@ class MeiliClient(
      * @throws Exception if an error occurs
      */
     fun getIndexList(): Array<Index> {
-        val meiliSearchIndexList: Array<Index> = jsonHandler.decode(
-            getRawIndexList(),
-            Array<Index>::class.java
-        )
+        val meiliSearchIndexList = jsonHandler.decode<Array<Index>>(getRawIndexList())
         for (indexes in meiliSearchIndexList) {
             indexes.setConfig(config)
         }
@@ -89,7 +87,7 @@ class MeiliClient(
      * @throws Exception if an error occurs
      */
     fun getIndex(uid: String): Index {
-        val index: Index = jsonHandler.decode(getRawIndex(uid), Index::class.java)
+        val index: Index = jsonHandler.decode(getRawIndex(uid))
         index.setConfig(config)
         return index
     }
@@ -116,7 +114,7 @@ class MeiliClient(
      * @throws Exception if an error occurs
      */
     fun updateIndex(uid: String, primaryKey: String?): Task {
-        return jsonHandler.decode(indexesHandler.updatePrimaryKey(uid, primaryKey), Task::class.java)
+        return jsonHandler.decode(indexesHandler.updatePrimaryKey(uid, primaryKey))
     }
 
     /**
@@ -128,7 +126,7 @@ class MeiliClient(
      * @throws Exception if an error occurs
      */
     fun deleteIndex(uid: String): Task {
-        return jsonHandler.decode(indexesHandler.delete(uid), Task::class.java)
+        return jsonHandler.decode(indexesHandler.delete(uid))
     }
 
     /**

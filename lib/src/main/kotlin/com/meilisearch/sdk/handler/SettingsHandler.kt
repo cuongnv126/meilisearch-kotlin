@@ -4,6 +4,7 @@ import com.meilisearch.sdk.Config
 import com.meilisearch.sdk.model.Task
 import com.meilisearch.sdk.model.TypoTolerance
 import com.meilisearch.sdk.http.MeiliSearchHttpRequest
+import com.meilisearch.sdk.json.decode
 import com.meilisearch.sdk.model.Settings
 
 /**
@@ -25,9 +26,7 @@ internal class SettingsHandler(config: Config) {
      * @throws Exception if an error occurs
      */
     fun getSettings(uid: String): Settings {
-        return jsonHandler.decode(
-            request.get("/indexes/$uid/settings"), Settings::class.java
-        )
+        return jsonHandler.decode(request.get("/indexes/$uid/settings"))
     }
 
     /**
@@ -40,12 +39,7 @@ internal class SettingsHandler(config: Config) {
      * @throws Exception if an error occurs
      */
     fun updateSettings(uid: String, settings: Settings): Task {
-        return jsonHandler.decode(
-            request.post(
-                "/indexes/$uid/settings", settings.getUpdateQuery()
-            ),
-            Task::class.java
-        )
+        return jsonHandler.decode(request.post("/indexes/$uid/settings", settings.getUpdateQuery()))
     }
 
     /**
@@ -57,9 +51,7 @@ internal class SettingsHandler(config: Config) {
      * @throws Exception if an error occurs
      */
     fun resetSettings(uid: String): Task {
-        return jsonHandler.decode(
-            request.delete("/indexes/$uid/settings"), Task::class.java
-        )
+        return jsonHandler.decode(request.delete("/indexes/$uid/settings"))
     }
 
     /**
@@ -71,10 +63,7 @@ internal class SettingsHandler(config: Config) {
      * @throws Exception if an error occurs
      */
     fun getRankingRuleSettings(uid: String): Array<String> {
-        return jsonHandler.decode(
-            request.get("/indexes/$uid/settings/ranking-rules"),
-            Array<String>::class.java
-        )
+        return jsonHandler.decode(request.get("/indexes/$uid/settings/ranking-rules"))
     }
 
     /**
@@ -88,12 +77,7 @@ internal class SettingsHandler(config: Config) {
      */
     fun updateRankingRuleSettings(uid: String, rankingRules: Array<String>): Task {
         val rankingRulesAsJson = jsonHandler.encode(rankingRules)
-        return jsonHandler.decode(
-            request.post(
-                "/indexes/$uid/settings/ranking-rules", rankingRulesAsJson
-            ),
-            Task::class.java
-        )
+        return jsonHandler.decode(request.post("/indexes/$uid/settings/ranking-rules", rankingRulesAsJson))
     }
 
     /**
@@ -105,10 +89,7 @@ internal class SettingsHandler(config: Config) {
      * @throws Exception if an error occurs
      */
     fun resetRankingRulesSettings(uid: String): Task {
-        return jsonHandler.decode(
-            request.delete("/indexes/$uid/settings/ranking-rules"),
-            Task::class.java
-        )
+        return jsonHandler.decode(request.delete("/indexes/$uid/settings/ranking-rules"))
     }
 
     /**
@@ -120,9 +101,7 @@ internal class SettingsHandler(config: Config) {
      * @throws Exception if an error occurs
      */
     fun getSynonymsSettings(uid: String): Map<String, Array<String>> {
-        return jsonHandler.decode(
-            request.get("/indexes/$uid/settings/synonyms"), MutableMap::class.java
-        )
+        return jsonHandler.decode(request.get("/indexes/$uid/settings/synonyms"))
     }
 
     /**
@@ -136,12 +115,7 @@ internal class SettingsHandler(config: Config) {
      */
     fun updateSynonymsSettings(uid: String, synonyms: Map<String?, Array<String>?>): Task {
         val synonymsAsJson = jsonHandler.encode(synonyms)
-        return jsonHandler.decode(
-            request.post(
-                "/indexes/$uid/settings/synonyms", synonymsAsJson
-            ),
-            Task::class.java
-        )
+        return jsonHandler.decode(request.post("/indexes/$uid/settings/synonyms", synonymsAsJson))
     }
 
     /**
@@ -153,10 +127,7 @@ internal class SettingsHandler(config: Config) {
      * @throws Exception if an error occurs
      */
     fun resetSynonymsSettings(uid: String): Task {
-        return jsonHandler.decode(
-            request.delete("/indexes/$uid/settings/synonyms"),
-            Task::class.java
-        )
+        return jsonHandler.decode(request.delete("/indexes/$uid/settings/synonyms"))
     }
 
     /**
@@ -168,10 +139,7 @@ internal class SettingsHandler(config: Config) {
      * @throws Exception if an error occurs
      */
     fun getStopWordsSettings(uid: String): Array<String> {
-        return jsonHandler.decode(
-            request.get("/indexes/$uid/settings/stop-words"),
-            Array<String>::class.java
-        )
+        return jsonHandler.decode(request.get("/indexes/$uid/settings/stop-words"))
     }
 
     /**
@@ -185,12 +153,7 @@ internal class SettingsHandler(config: Config) {
      */
     fun updateStopWordsSettings(uid: String, stopWords: Array<String>): Task {
         val stopWordsAsJson = jsonHandler.encode(stopWords)
-        return jsonHandler.decode(
-            request.post(
-                "/indexes/$uid/settings/stop-words", stopWordsAsJson
-            ),
-            Task::class.java
-        )
+        return jsonHandler.decode(request.post("/indexes/$uid/settings/stop-words", stopWordsAsJson))
     }
 
     /**
@@ -202,10 +165,7 @@ internal class SettingsHandler(config: Config) {
      * @throws Exception if an error occurs
      */
     fun resetStopWordsSettings(uid: String): Task {
-        return jsonHandler.decode(
-            request.delete("/indexes/$uid/settings/stop-words"),
-            Task::class.java
-        )
+        return jsonHandler.decode(request.delete("/indexes/$uid/settings/stop-words"))
     }
 
     /**
@@ -217,10 +177,7 @@ internal class SettingsHandler(config: Config) {
      * @throws Exception if an error occurs
      */
     fun getSearchableAttributesSettings(uid: String): Array<String> {
-        return jsonHandler.decode(
-            request.get("/indexes/$uid/settings/searchable-attributes"),
-            Array<String>::class.java
-        )
+        return jsonHandler.decode(request.get("/indexes/$uid/settings/searchable-attributes"))
     }
 
     /**
@@ -239,8 +196,7 @@ internal class SettingsHandler(config: Config) {
             request.put(
                 "/indexes/$uid/settings/searchable-attributes",
                 searchableAttributesAsJson
-            ),
-            Task::class.java
+            )
         )
     }
 
@@ -253,12 +209,7 @@ internal class SettingsHandler(config: Config) {
      * @throws Exception if an error occurs
      */
     fun resetSearchableAttributesSettings(uid: String): Task {
-        return jsonHandler.decode(
-            request.delete(
-                "/indexes/$uid/settings/searchable-attributes"
-            ),
-            Task::class.java
-        )
+        return jsonHandler.decode(request.delete("/indexes/$uid/settings/searchable-attributes"))
     }
 
     /**
@@ -270,10 +221,7 @@ internal class SettingsHandler(config: Config) {
      * @throws Exception if an error occurs
      */
     fun getDisplayedAttributesSettings(uid: String): Array<String> {
-        return jsonHandler.decode(
-            request.get("/indexes/$uid/settings/displayed-attributes"),
-            Array<String>::class.java
-        )
+        return jsonHandler.decode(request.get("/indexes/$uid/settings/displayed-attributes"))
     }
 
     /**
@@ -292,8 +240,7 @@ internal class SettingsHandler(config: Config) {
             request.put(
                 "/indexes/$uid/settings/displayed-attributes",
                 displayAttributesAsJson
-            ),
-            Task::class.java
+            )
         )
     }
 
@@ -306,10 +253,7 @@ internal class SettingsHandler(config: Config) {
      * @throws Exception if an error occurs
      */
     fun resetDisplayedAttributesSettings(uid: String): Task {
-        return jsonHandler.decode(
-            request.delete("/indexes/$uid/settings/displayed-attributes"),
-            Task::class.java
-        )
+        return jsonHandler.decode(request.delete("/indexes/$uid/settings/displayed-attributes"))
     }
 
     /**
@@ -321,10 +265,7 @@ internal class SettingsHandler(config: Config) {
      * @throws Exception if an error occurs
      */
     fun getFilterableAttributesSettings(uid: String): Array<String> {
-        return jsonHandler.decode(
-            request.get("/indexes/$uid/settings/filterable-attributes"),
-            Array<String>::class.java
-        )
+        return jsonHandler.decode(request.get("/indexes/$uid/settings/filterable-attributes"))
     }
 
     /**
@@ -343,8 +284,7 @@ internal class SettingsHandler(config: Config) {
             request.put(
                 "/indexes/$uid/settings/filterable-attributes",
                 filterableAttributesAsJson
-            ),
-            Task::class.java
+            )
         )
     }
 
@@ -357,12 +297,7 @@ internal class SettingsHandler(config: Config) {
      * @throws Exception if an error occurs
      */
     fun resetFilterableAttributesSettings(uid: String): Task {
-        return jsonHandler.decode(
-            request.delete(
-                "/indexes/$uid/settings/filterable-attributes"
-            ),
-            Task::class.java
-        )
+        return jsonHandler.decode(request.delete("/indexes/$uid/settings/filterable-attributes"))
     }
 
     /**
@@ -374,10 +309,7 @@ internal class SettingsHandler(config: Config) {
      * @throws Exception if an error occurs
      */
     fun getDistinctAttributeSettings(uid: String): String {
-        return jsonHandler.decode(
-            request.get("/indexes/$uid/settings/distinct-attribute"),
-            String::class.java
-        )
+        return jsonHandler.decode(request.get("/indexes/$uid/settings/distinct-attribute"))
     }
 
     /**
@@ -395,8 +327,7 @@ internal class SettingsHandler(config: Config) {
             request.put(
                 "/indexes/$uid/settings/distinct-attribute",
                 distinctAttributeAsJson
-            ),
-            Task::class.java
+            )
         )
     }
 
@@ -409,10 +340,7 @@ internal class SettingsHandler(config: Config) {
      * @throws Exception if an error occurs
      */
     fun resetDistinctAttributeSettings(uid: String): Task {
-        return jsonHandler.decode(
-            request.delete("/indexes/$uid/settings/distinct-attribute"),
-            Task::class.java
-        )
+        return jsonHandler.decode(request.delete("/indexes/$uid/settings/distinct-attribute"))
     }
 
     /**
@@ -424,10 +352,7 @@ internal class SettingsHandler(config: Config) {
      * @throws Exception if an error occurs
      */
     fun getTypoToleranceSettings(uid: String): TypoTolerance {
-        return jsonHandler.decode(
-            request.get("/indexes/$uid/settings/typo-tolerance"),
-            TypoTolerance::class.java
-        )
+        return jsonHandler.decode(request.get("/indexes/$uid/settings/typo-tolerance"))
     }
 
     /**
@@ -441,12 +366,7 @@ internal class SettingsHandler(config: Config) {
      */
     fun updateTypoToleranceSettings(uid: String, typoTolerance: TypoTolerance?): Task {
         val typoToleranceAsJson = jsonHandler.encode(typoTolerance)
-        return jsonHandler.decode(
-            request.post(
-                "/indexes/$uid/settings/typo-tolerance", typoToleranceAsJson
-            ),
-            Task::class.java
-        )
+        return jsonHandler.decode(request.post("/indexes/$uid/settings/typo-tolerance", typoToleranceAsJson))
     }
 
     /**
@@ -458,9 +378,6 @@ internal class SettingsHandler(config: Config) {
      * @throws Exception if an error occurs
      */
     fun resetTypoToleranceSettings(uid: String): Task {
-        return jsonHandler.decode(
-            request.delete("/indexes/$uid/settings/typo-tolerance"),
-            Task::class.java
-        )
+        return jsonHandler.decode(request.delete("/indexes/$uid/settings/typo-tolerance"))
     }
 }

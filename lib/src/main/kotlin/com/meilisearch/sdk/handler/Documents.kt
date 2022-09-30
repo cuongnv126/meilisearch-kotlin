@@ -3,6 +3,7 @@ package com.meilisearch.sdk.handler
 import com.google.gson.JsonArray
 import com.meilisearch.sdk.Config
 import com.meilisearch.sdk.http.MeiliSearchHttpRequest
+import com.meilisearch.sdk.json.decode
 import com.meilisearch.sdk.model.Task
 import java.util.function.Consumer
 
@@ -105,7 +106,7 @@ internal class Documents(config: Config) {
         if (primaryKey != null) {
             urlQuery += "?primaryKey=$primaryKey"
         }
-        return jsonHandler.decode(request.post(urlQuery, document), Task::class.java)
+        return jsonHandler.decode(request.post(urlQuery, document))
     }
 
     /**
@@ -126,7 +127,7 @@ internal class Documents(config: Config) {
         if (primaryKey != null) {
             urlPath += "?primaryKey=$primaryKey"
         }
-        return jsonHandler.decode(request.put(urlPath, document), Task::class.java)
+        return jsonHandler.decode(request.put(urlPath, document))
     }
 
     /**
@@ -139,7 +140,7 @@ internal class Documents(config: Config) {
      */
     fun deleteDocument(uid: String, identifier: String): Task {
         val urlPath = "/indexes/$uid/documents/$identifier"
-        return jsonHandler.decode(request.delete(urlPath), Task::class.java)
+        return jsonHandler.decode(request.delete(urlPath))
     }
 
     /**
@@ -161,9 +162,7 @@ internal class Documents(config: Config) {
                 string
             )
         })
-        return jsonHandler.decode(
-            request.post(urlPath, requestData.toString()), Task::class.java
-        )
+        return jsonHandler.decode(request.post(urlPath, requestData.toString()))
     }
 
     /**
@@ -175,6 +174,6 @@ internal class Documents(config: Config) {
      */
     fun deleteAllDocuments(uid: String): Task {
         val urlPath = "/indexes/$uid/documents"
-        return jsonHandler.decode(request.delete(urlPath), Task::class.java)
+        return jsonHandler.decode(request.delete(urlPath))
     }
 }

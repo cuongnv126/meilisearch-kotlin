@@ -2,6 +2,7 @@ package com.meilisearch.sdk.handler
 
 import com.meilisearch.sdk.Config
 import com.meilisearch.sdk.http.MeiliSearchHttpRequest
+import com.meilisearch.sdk.json.decode
 import com.meilisearch.sdk.model.Dump
 
 internal class DumpHandler(config: Config) {
@@ -15,7 +16,7 @@ internal class DumpHandler(config: Config) {
      * @throws Exception if an error occurs
      */
     fun createDump(): Dump {
-        return jsonHandler.decode(request.post("/dumps", ""), Dump::class.java)
+        return jsonHandler.decode(request.post("/dumps", ""))
     }
 
     /**

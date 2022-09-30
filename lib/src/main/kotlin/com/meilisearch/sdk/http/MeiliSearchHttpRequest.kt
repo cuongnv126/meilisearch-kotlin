@@ -2,10 +2,10 @@ package com.meilisearch.sdk.http
 
 import com.meilisearch.sdk.Config
 import com.meilisearch.sdk.coroutine.waitOn
-import com.meilisearch.sdk.exceptions.ApiError
 import com.meilisearch.sdk.exceptions.MeiliSearchApiException
 import com.meilisearch.sdk.http.factory.BasicRequestFactory
 import com.meilisearch.sdk.http.request.HttpMethod
+import com.meilisearch.sdk.json.decode
 
 internal class MeiliSearchHttpRequest(config: Config) {
     private val jsonHandler = config.jsonHandlerFactory.newJsonHandler()
@@ -26,9 +26,7 @@ internal class MeiliSearchHttpRequest(config: Config) {
             requestFactory.create(HttpMethod.GET, api, null, null)
         )
         if (httpResponse.statusCode >= 400) {
-            throw MeiliSearchApiException(
-                jsonHandler.decode(httpResponse.contentAsString, ApiError::class.java)
-            )
+            throw MeiliSearchApiException(jsonHandler.decode(httpResponse.contentAsString))
         }
         return@waitOn httpResponse.contentAsString
     }
@@ -45,7 +43,7 @@ internal class MeiliSearchHttpRequest(config: Config) {
     fun post(api: String, body: String?) = waitOn(dispatcher) {
         val httpResponse = client.post(requestFactory.create(HttpMethod.POST, api, null, body))
         if (httpResponse.statusCode >= 400) {
-            throw MeiliSearchApiException(jsonHandler.decode(httpResponse.contentAsString, ApiError::class.java))
+            throw MeiliSearchApiException(jsonHandler.decode(httpResponse.contentAsString))
         }
         return@waitOn httpResponse.contentAsString
     }
@@ -62,7 +60,7 @@ internal class MeiliSearchHttpRequest(config: Config) {
     fun put(api: String, body: String?) = waitOn(dispatcher) {
         val httpResponse = client.put(requestFactory.create(HttpMethod.PUT, api, null, body))
         if (httpResponse.statusCode >= 400) {
-            throw MeiliSearchApiException(jsonHandler.decode(httpResponse.contentAsString, ApiError::class.java))
+            throw MeiliSearchApiException(jsonHandler.decode(httpResponse.contentAsString))
         }
         return@waitOn httpResponse.contentAsString
     }
@@ -78,7 +76,7 @@ internal class MeiliSearchHttpRequest(config: Config) {
     fun delete(api: String) = waitOn(dispatcher) {
         val httpResponse = client.put(requestFactory.create(HttpMethod.DELETE, api, null, null))
         if (httpResponse.statusCode >= 400) {
-            throw MeiliSearchApiException(jsonHandler.decode(httpResponse.contentAsString, ApiError::class.java))
+            throw MeiliSearchApiException(jsonHandler.decode(httpResponse.contentAsString))
         }
         return@waitOn httpResponse.contentAsString
     }

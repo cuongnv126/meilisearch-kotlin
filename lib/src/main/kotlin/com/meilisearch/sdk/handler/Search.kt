@@ -2,6 +2,7 @@ package com.meilisearch.sdk.handler
 
 import com.meilisearch.sdk.Config
 import com.meilisearch.sdk.http.MeiliSearchHttpRequest
+import com.meilisearch.sdk.json.decode
 import com.meilisearch.sdk.model.SearchRequest
 import com.meilisearch.sdk.model.SearchResult
 
@@ -45,7 +46,7 @@ internal class Search(config: Config) {
      * @throws Exception Search Exception or Client Error
      */
     fun search(uid: String, query: String): SearchResult {
-        return jsonHandler.decode(rawSearch(uid, query), SearchResult::class.java)
+        return jsonHandler.decode(rawSearch(uid, query))
     }
 
     /**
@@ -57,6 +58,6 @@ internal class Search(config: Config) {
      * @throws Exception Search Exception or Client Error
      */
     fun search(uid: String, searchRequest: SearchRequest): SearchResult {
-        return jsonHandler.decode(rawSearch(uid, searchRequest), SearchResult::class.java)
+        return jsonHandler.decode(rawSearch(uid, searchRequest))
     }
 }

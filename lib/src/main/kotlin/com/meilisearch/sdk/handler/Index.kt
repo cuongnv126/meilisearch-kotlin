@@ -6,6 +6,7 @@ import com.meilisearch.sdk.model.Settings
 import com.meilisearch.sdk.model.Task
 import com.meilisearch.sdk.model.TypoTolerance
 import com.meilisearch.sdk.json.JsonHandler
+import com.meilisearch.sdk.json.decode
 import com.meilisearch.sdk.model.SearchRequest
 import com.meilisearch.sdk.model.SearchResult
 import java.io.Serializable
@@ -621,7 +622,7 @@ class Index internal constructor(
     fun fetchPrimaryKey() {
         val requestQuery = "/indexes/$uid"
         val request = MeiliSearchHttpRequest(config)
-        val retrievedIndex: Index = jsonHandler.decode(request.get(requestQuery), Index::class.java)
+        val retrievedIndex: Index = jsonHandler.decode(request.get(requestQuery))
         primaryKey = retrievedIndex.primaryKey
     }
 }

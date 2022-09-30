@@ -2,6 +2,7 @@ package com.meilisearch.sdk.handler
 
 import com.meilisearch.sdk.Config
 import com.meilisearch.sdk.http.MeiliSearchHttpRequest
+import com.meilisearch.sdk.json.decode
 import com.meilisearch.sdk.model.Result
 import com.meilisearch.sdk.model.Task
 import java.util.concurrent.TimeoutException
@@ -27,7 +28,7 @@ internal class TasksHandler(config: Config) {
      */
     fun getTask(indexUid: String, taskUid: Int): Task {
         val urlPath = "/indexes/$indexUid/tasks/$taskUid"
-        return jsonHandler.decode(request.get(urlPath), Task::class.java)
+        return jsonHandler.decode(request.get(urlPath))
     }
 
     /**
@@ -39,7 +40,7 @@ internal class TasksHandler(config: Config) {
      */
     fun getTasks(indexUid: String): Array<Task> {
         val urlPath = "/indexes/$indexUid/tasks"
-        return jsonHandler.decode(request.get(urlPath), Array<Task>::class.java)
+        return jsonHandler.decode(request.get(urlPath))
     }
 
     /**
@@ -51,7 +52,7 @@ internal class TasksHandler(config: Config) {
      */
     fun getTask(taskUid: Int): Task {
         val urlPath = "/tasks/$taskUid"
-        return jsonHandler.decode(request.get(urlPath), Task::class.java)
+        return jsonHandler.decode(request.get(urlPath))
     }
 
     /**
@@ -62,12 +63,7 @@ internal class TasksHandler(config: Config) {
      */
     fun getTasks(): Array<Task>? {
         val urlPath = "/tasks"
-        // todo: check later
-        val result = jsonHandler.decode<Result<Task>>(
-            request.get(urlPath),
-            Result::class.java,
-            Task::class.java
-        )
+        val result = jsonHandler.decode<Result<Task>>(request.get(urlPath))
         return result.results
     }
     /**
