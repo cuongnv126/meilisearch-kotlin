@@ -196,40 +196,23 @@ class SearchRequest(
             offset?.let { put("offset", it) }
             limit?.let { put("limit", it) }
 
-            if (!attributesToRetrieve.isNullOrEmpty()) {
-                put("attributesToRetrieve", attributesToRetrieve)
-            }
+            attributesToRetrieve?.let { put("attributesToRetrieve", it) }
 
             cropLength?.let { put("cropLength", it) }
             cropLength?.let { put("cropMarker", it) }
             showMatchesPosition?.let { put("showMatchesPosition", it) }
 
-            if (!facetsDistribution.isNullOrEmpty()) {
-                put("facetsDistribution", facetsDistribution)
-            }
-
-            if (!sort.isNullOrEmpty()) {
-                put("sort", sort)
-            }
+            facetsDistribution?.let { put("facetsDistribution", it) }
+            sort?.let { put("sort", it) }
 
             highlightPreTag?.let { put("highlightPreTag", it) }
             highlightPostTag?.let { put("highlightPostTag", it) }
 
-            if (!attributesToCrop.isNullOrEmpty()) {
-                put("attributesToCrop", attributesToCrop)
-            }
+            attributesToCrop?.let { put("attributesToCrop", it) }
+            attributesToHighlight?.let { put("attributesToHighlight", it) }
 
-            if (!attributesToHighlight.isNullOrEmpty()) {
-                put("attributesToHighlight", attributesToHighlight)
-            }
-
-            if (!filter.isNullOrEmpty()) {
-                put("filter", filter)
-            }
-
-            if (!filterArray.isNullOrEmpty()) {
-                put("filter", filterArray)
-            }
+            filter?.let { put("filter", it) }
+            filterArray?.let { put("filter", it) }
         }
         return jsonObject.toString()
     }
